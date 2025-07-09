@@ -224,12 +224,22 @@
         })
       }
       async function init() {
-        window.Telegram.WebApp.ready();
-        const tg = window.Telegram.WebApp;
-        if (tg.initDataUnsafe?.user) {
-            window.username = `@${tg.initDataUnsafe?.user}`
-        } else {
-            window.username = 'error' 
-        }
-      }
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    const user = tg.initDataUnsafe?.user;
+
+    if (user && user.username) {
+      window.username = `@${user.username}`;
+    } else if (user && user.first_name) {
+      window.username = user.first_name;
+    } else {
+      window.username = 'error';
+    }
+  } else {
+    window.username = 'not_in_telegram';
+  }
+}
+
       init();</script></body></html>
