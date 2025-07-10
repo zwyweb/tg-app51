@@ -348,7 +348,7 @@ function showMsg(el,txt){
         updateCardStats('cat')
         document.getElementById("b").disabled = !0;
         document.getElementById("b").innerText = 'Ожидание...'
-        const e = "Кузьма аль Кашастый",
+        const e = generateCatName(),
           t = getRarityInfo(hashNameToNumber(e, 1e3)),
           a = await getWallet();
         if (a < 1e3) return void alert("Недостаточно валюты!");
