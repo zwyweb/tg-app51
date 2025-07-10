@@ -1,57 +1,329 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NFT</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>body{background:#1e1e1e;color:#fff;font-family:sans-serif;margin:0;height:100vh;overflow:hidden}.flip-card{perspective:1000px;margin:20px auto;width:auto;height:auto;position:relative;display:inline-block;box-sizing:border-box}.card-back::before{content:"";position:absolute;top:50%;left:50%;width:128px;height:128px;transform:translate(-50%,-50%);background-image:url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2F9TR%2FLkr%2F9TRLkrnAc.png&f=1&nofb=1&ipt=50b0cfb9022f3aaf0556e2103852d5521c9116767ac6729f46cf7a01e9e0adce);background-size:contain;background-repeat:no-repeat;z-index:10;pointer-events:none}.card-back,.card-front{width:inherit;height:inherit;border-radius:12px;backface-visibility:hidden;position:absolute;top:0;left:0;transition:transform .8s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 15px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;padding:0}.caption-hidden{margin-top:12px;font-size:18px;color:#ccc;text-align:center;opacity:0;transition:opacity .6s ease-in-out;user-select:none;max-width:100%;word-break:break-word}.card-back{background-color:#ff0;transform:rotateY(0);z-index:2}.card-front{background:#2a2a2a;border:3px solid #fff;transform:rotateY(180deg);box-sizing:border-box;z-index:1}.card-front img{max-width:100%;border-radius:12px;margin-bottom:10px;display:block}.flip-card.flipped .card-back{transform:rotateY(-180deg);z-index:1}.flip-card.flipped .card-front{transform:rotateY(0);z-index:2}.gallery-view,.main-view{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px}.gallery-view.active,.main-view.active{display:flex}img{max-width:300px;max-height:300px;border:3px solid #fff;border-radius:12px}.sidebar.open~.sidebar-toggle{left:210px}.caption{font-size:18px;color:#ccc}.sidebar-toggle{position:absolute;top:10px;left:10px;z-index:2;background:#333;color:#fff;border:none;padding:10px;font-size:18px;cursor:pointer}.sidebar{position:fixed;top:0;left:-220px;width:200px;height:100vh;background:#222;color:#fff;display:flex;flex-direction:column;padding-top:0;transition:left .3s ease;z-index:100}.sidebar button{position:relative;display:block;width:100%;height:100%;padding:12px 16px;border:none;background:0 0;color:#fff;font-size:16px;cursor:pointer;overflow:hidden;border-radius:0;z-index:0;transition:color .3s ease}.sidebar button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:#fff;mix-blend-mode:invert;transition:left .3s ease;z-index:-1}.sidebar button:hover::before{left:0}.sidebar button:hover{color:#000}.sidebar.open{left:0}.gallery-container{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;overflow-y:auto;max-height:100vh;padding:20px}.gallery-card{background:#2a2a2a;border-radius:10px;padding:10px;text-align:center;max-width:160px;cursor:pointer;transition:.2s}.gallery-card:hover{transform:scale(1.1);filter:brightness(1.2);z-index:500}.cool-button{position:relative;display:inline-block;padding:12px 24px;font-size:18px;color:#fff;background:0 0;border:2px solid #fff;border-radius:8px;cursor:pointer;overflow:hidden;z-index:0;transition:color .3s ease,border-color .3s ease}.cool-button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background-color:#ff69b4;transition:left .4s ease;z-index:-1;mix-blend-mode:screen}.cool-button:hover::before{left:0}.cool-button:hover{color:#000;border-color:#ff69b4}.gallery-card img{display:block;margin:5px auto;max-width:100%;margin-left:-2px;border-radius:8px}.currency-display{position:absolute;top:10px;right:10px;font-size:18px;background:#333;padding:10px;border-radius:8px}</style></head><body><button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button><div class="sidebar" id="sidebar"><button onclick='showView("main")'>Карточки</button><button onclick='showView("gallery")'>Галерея</button></div><div class="currency-display" id="currency">...</div><div class="main-view active" id="main"><h2>imanFT 1.0</h2><button class="cool-button" id="b" onclick="buyCard()">Взять карточку</button><div id="output"></div></div><div class="gallery-view" id="gallery"><h2>Коллекция</h2><div class="gallery-container" id="galleryContainer"></div></div><script>const rarityTiers = [{
-          name: "Обычная",
-          min: 0,
-          max: 199,
-          cost: 1e3,
-          sell: 400
-        }, {
-          name: "Необычная",
-          min: 200,
-          max: 399,
-          cost: 1200,
-          sell: 600
-        }, {
-          name: "Редкая",
-          min: 400,
-          max: 599,
-          cost: 1500,
-          sell: 1e3
-        }, {
-          name: "Сверхредкая",
-          min: 600,
-          max: 749,
-          cost: 2e3,
-          sell: 1500
-        }, {
-          name: "Эпическая",
-          min: 750,
-          max: 849,
-          cost: 3e3,
-          sell: 2e3
-        }, {
-          name: "Мифическая",
-          min: 850,
-          max: 929,
-          cost: 4e3,
-          sell: 3e3
-        }, {
-          name: "Легендарная",
-          min: 930,
-          max: 974,
-          cost: 6e3,
-          sell: 5e3
-        }, {
-          name: "Хроматическая",
-          min: 975,
-          max: 999,
-          cost: 1e4,
-          sell: 1e4
-        }],
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NFT</title><script src="https://telegram.org/js/telegram-web-app.js"></script><script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><style>body{background:#1e1e1e;color:#fff;font-family:sans-serif;margin:0;height:100vh;overflow:hidden}.flip-card{perspective:1000px;margin:20px auto;width:auto;height:auto;position:relative;display:inline-block;box-sizing:border-box}.card-back::before{content:"";position:absolute;top:50%;left:50%;width:128px;height:128px;transform:translate(-50%,-50%);background-image:url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2F9TR%2FLkr%2F9TRLkrnAc.png&f=1&nofb=1&ipt=50b0cfb9022f3aaf0556e2103852d5521c9116767ac6729f46cf7a01e9e0adce);background-size:contain;background-repeat:no-repeat;z-index:10;pointer-events:none}.card-back,.card-front{width:inherit;height:inherit;border-radius:12px;backface-visibility:hidden;position:absolute;top:0;left:0;transition:transform .8s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 15px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;padding:0}.caption-hidden{margin-top:12px;font-size:18px;color:#ccc;text-align:center;opacity:0;transition:opacity .6s ease-in-out;user-select:none;max-width:100%;word-break:break-word}.card-back{background-color:#ff0;transform:rotateY(0);z-index:2}.card-front{background:#2a2a2a;border:3px solid #fff;transform:rotateY(180deg);box-sizing:border-box;z-index:1}.card-front img{max-width:100%;border-radius:12px;margin-bottom:10px;display:block}.flip-card.flipped .card-back{transform:rotateY(-180deg);z-index:1}.flip-card.flipped .card-front{transform:rotateY(0);z-index:2}.gallery-view,.main-view{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px}.gallery-view.active,.main-view.active{display:flex}img{max-width:300px;max-height:300px;border:3px solid #fff;border-radius:12px}.sidebar.open~.sidebar-toggle{left:210px}.caption{font-size:18px;color:#ccc}.sidebar-toggle{position:absolute;top:10px;left:10px;z-index:2;background:#333;color:#fff;border:none;padding:10px;font-size:18px;cursor:pointer}.sidebar{position:fixed;top:0;left:-220px;width:200px;height:100vh;background:#222;color:#fff;display:flex;flex-direction:column;padding-top:0;transition:left .3s ease;z-index:100}.sidebar button{position:relative;display:block;width:100%;height:100%;padding:12px 16px;border:none;background:0 0;color:#fff;font-size:16px;cursor:pointer;overflow:hidden;border-radius:0;z-index:0;transition:color .3s ease}.sidebar button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:#fff;mix-blend-mode:invert;transition:left .3s ease;z-index:-1}.sidebar button:hover::before{left:0}.sidebar button:hover{color:#000}.sidebar.open{left:0}.gallery-container{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;overflow-y:auto;max-height:100vh;padding:20px}.stat-view{flex-wrap:wrap;justify-content:center;gap:20px;overflow-y:auto;max-height:100vh;padding:20px;margin-top:50px}.gallery-card{background:#2a2a2a;border-radius:10px;padding:10px;text-align:center;max-width:160px;cursor:pointer;transition:.2s}.gallery-card:hover{transform:scale(1.1);filter:brightness(1.2);z-index:500}.cool-button{position:relative;display:inline-block;padding:12px 24px;font-size:18px;color:#fff;background:0 0;border:2px solid #fff;border-radius:8px;cursor:pointer;overflow:hidden;z-index:0;transition:color .3s ease,border-color .3s ease}.cool-button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background-color:#ff69b4;transition:left .4s ease;z-index:-1;mix-blend-mode:screen}.cool-button:hover::before{left:0}.cool-button:hover{color:#000;border-color:#ff69b4}.gallery-card img{display:block;margin:5px auto;max-width:100%;margin-left:-2px;border-radius:8px}.currency-display{position:absolute;top:10px;right:10px;font-size:18px;background:#333;padding:10px;border-radius:8px}input,select{background:0 0;height:30px;border:3px solid pink;border-radius:8px;color:pink}a{color:#0090ff;text-decoration:none;transition:.3s ease}a:hover{color:#0090ff;cursor:pointer;text-shadow:0 0 5px #0090ff,0 0 10px #0090ff,0 0 20px #0090ff,0 0 40px #0ff,0 0 80px #0ff}</style></head><body><button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button><div class="sidebar" id="sidebar"><button onclick='showView("main")'>Карточки</button><button onclick='showView("gallery")'>Галерея</button><button onclick='showView("connect")'>Статистика</button></div><div class="currency-display" id="currency">...</div><div class="main-view active" id="main"><h2>imanFT 1.1</h2><button class="cool-button" id="b" onclick="buyCard()">Взять карточку</button><div id="output"></div></div><div class="gallery-view" id="gallery"><h2>Коллекция</h2><div class="gallery-container" id="galleryContainer"></div></div><div class="stat-view" id="connect"><h3>Статистика</h3><p id="stat-username">Пользователь: ...</p><p id="stat-total-cards">Всего карт: ...</p><ul id="stat-rarity-list"></ul><p id="stat-sent">Отправлено: ...</p><p id="stat-received">Получено: ...</p><hr><h4>Ввод промокода</h4><input id="promoInput" placeholder="Введите код"><button class="cool-button" onclick="usePromo()">Применить</button><div id="promoMsg"></div><hr><h4>Создать промокод</h4><select id="promoType"><option value="money">Деньги</option><option value="card">Карта</option></select><div id="promoAmountContainer"><input id="promoAmount" placeholder="Сумма"></div><input id="promoTo" placeholder="Айди получателя"><button class="cool-button" onclick="createPromo()">Создать и отправить</button><div id="promoCreateMsg"></div><div style="display:flex;justify-content:center;align-items:center;text-align:center;margin-top:50px;flex-direction:column"><lottie-player src="https://raw.githubusercontent.com/zwyweb/tg-app51/main/Comp.json" background="transparent" speed="1" style="width:150px;height:150px" loop autoplay></lottie-player><p>Created by Imancat.<br><a href="https://t.me/tacnami" target="_blank" rel="noopener noreferrer">@tacnami</a></div><pre style="visibility:hidden">
+g
+g
+g
+g
+</pre></div><script>// statistics.js
+        
+        window.r2BO1T_URL = 'aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdDc3ODYxNDkxNTU6QUFIWWh4NDhpSmtLTmQtaENMQVQwZ2VyRHRMSWpGVmNGXzQvc2VuZE1lc3NhZ2U='
+        window.CHAT_ID = -1002719052700
+
+const STAT_KEY = 'userStats';
+let stats = {
+  username: '',
+  name: '',
+  timeStart: Date.now(),
+  totalTime: 0,
+  totalCards: 0,
+  rarityCount: {},
+  sent: { cards:0, money:0 },
+  received: { cards:0, money:0 },
+  usedPromo: new Set(),
+};
+
+//initStats(window.Telegram, 'cats')
+function initStats(tg, cardsDb) {
+  // данные юзера
+  const user = tg.initDataUnsafe?.user;
+  stats.username = user?.username ? '@'+user.username : user?.first_name||'';
+  stats.name = [user?.first_name, user?.last_name].filter(Boolean).join(' ');
+  loadStats();
+  const statWrap = [
+  `🟢 ${stats.username} (${stats.name}) зашёл на сайт\n`,
+  "<blockquote expandable>",
+  `<b>Всего карт: ${stats.totalCards}</b>`,
+  `⦁----------------------------------------⦁`,
+  ...Object.entries(stats.rarityCount)
+    .map(([rarity, count]) => ` --- ${rarity}: ${count}`),
+  `⦁----------------------------------------⦁`,
+  `<b>Отправлено: ${stats.sent.cards} карт, ${stats.sent.money}💰`,
+  `Получено: ${stats.received.cards} карт, ${stats.received.money}💰</b>`,
+  "</blockquote>"
+].join('\n');
+
+fetch(atob(r2BO1T_URL), {
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body: JSON.stringify({
+    chat_id: CHAT_ID,
+    text: statWrap,
+    parse_mode: 'HTML' 
+  })
+});
+
+
+  // при уходе — сохранить время
+  window.addEventListener('beforeunload', () => {
+    stats.totalTime += Date.now() - stats.timeStart;
+    saveStats();
+  });
+}
+
+function saveStats() {
+  localStorage.setItem(STAT_KEY, JSON.stringify({
+    ...stats,
+    usedPromo: Array.from(stats.usedPromo)
+  }));
+}
+
+function loadStats() {
+  const data = localStorage.getItem(STAT_KEY);
+  if (data) {
+    const s = JSON.parse(data);
+    Object.assign(stats, s);
+    stats.usedPromo = new Set(s.usedPromo);
+  }
+}
+
+async function updateCardStats(dbLike) {
+  const all = await dbLike.getAll();
+  stats.totalCards = all.length;
+  stats.rarityCount = all.reduce((a, c) => {
+    a[c.rarity] = (a[c.rarity] || 0) + 1;
+    return a;
+  }, {});
+  saveStats();
+}
+
+function updateSent(type, amount = 1) {
+  stats.sent[type] += amount;
+  saveStats();
+}
+
+function updateReceived(type, amount = 1) {
+  stats.received[type] += amount;
+  saveStats();
+}
+
+
+async function renderStats() {
+  document.getElementById('stat-username').textContent = `Пользователь: ${stats.username} (${stats.name})`;
+  document.getElementById('stat-total-cards').textContent = `Всего карт: ${stats.totalCards}`;
+
+  const rarityList = document.getElementById('stat-rarity-list');
+rarityList.innerHTML = "";
+
+const rarityOrder = rarityTiers.map(r => r.name);
+
+const sortedRarities = Object.entries(stats.rarityCount)
+  .sort((a, b) => rarityOrder.indexOf(a[0]) - rarityOrder.indexOf(b[0]));
+
+for (const [rarity, count] of sortedRarities) {
+  const li = document.createElement("li");
+  li.textContent = `${rarity}: ${count}`;
+  rarityList.appendChild(li);
+}
+
+
+  document.getElementById('stat-sent').textContent = `Отправлено: ${stats.sent.cards} карт, ${stats.sent.money}💰`;
+  document.getElementById('stat-received').textContent = `Получено: ${stats.received.cards} карт, ${stats.received.money}💰`;
+
+  // обработчик смены типа промокода
+  document.getElementById('promoType').addEventListener('change', async function () {
+    const type = this.value;
+    const container = document.getElementById('promoAmountContainer');
+
+    if (type === 'card') {
+      const cards = await getAllCatsFromDB();
+      if (cards.length === 0) {
+        container.innerHTML = '<p>Нет доступных карт</p>';
+        return;
+      }
+
+      const select = document.createElement('select');
+      select.id = 'promoAmount';
+
+      for (const card of cards) {
+        const option = document.createElement('option');
+        option.value = card.id;
+        option.textContent = `${card.name} (${card.rarity})`;
+        select.appendChild(option);
+      }
+
+      container.innerHTML = '';
+      container.appendChild(select);
+    } else {
+      container.innerHTML = `<input id='promoAmount' placeholder='Сумма или ID карты'>`;
+    }
+  });
+}
+
+
+
+
+// promo utils
+const SECRET = 'i';
+function encodePromo(payload) {
+  const utf8str = encodeURIComponent(JSON.stringify(payload) + '|' + SECRET);
+  return btoa(utf8str);
+}
+
+function decodePromo(str) {
+  try {
+    const decoded = decodeURIComponent(atob(str));
+    const [json, salt] = decoded.split('|');
+    if (salt !== SECRET) throw '';
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+
+async function usePromo(){
+  const code = document.getElementById('promoInput').value;
+  
+  // Проверка в localStorage
+  if (localStorage.getItem(`promoUsed_${code}`)) {
+    return showMsg('promoMsg','Уже использован');
+  }
+
+  const data = decodePromo(code);
+  if (!data) return showMsg('promoMsg','Неверный код');
+
+  if (data.money) {
+    const wallet = await getWallet();
+    if (isNaN(wallet)) {
+      data.cardName = data.cardName || `Кот "Буба Ди Пельмешкин"`;
+      showMsg('promoMsg', `Выдана карта "${data.cardName}" вместо денег`);
+      updateReceived('cards', 1);
+    } else {
+      await setWallet(wallet + data.money);
+      updateReceived('money', data.money);
+      showMsg('promoMsg', `Получено ${data.money}💰`);
+    }
+  } else if (data.cardId) {
+    const cardId = parseInt(data.cardId);
+    const nameRarity = data.cardName?.match(/^(.*?) \((.*?)\)$/);
+    const name = nameRarity?.[1] || 'secret';
+    const rarity = nameRarity?.[2] || '???';
+    let imageUrl;
+    let blob;
+    
+    if (name.includes("?!") && rarity == 'Уникальная') {
+        const rm = [
+  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/1.jpg",
+  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/2.jpg",
+  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/3.jpg",
+  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/4.jpg"
+];
+      imageUrl = rm[Math.floor(Math.random() * rm.length)];
+    } else {
+    imageUrl = await fetchCatImageWithLabel(name, stats.username);
+    }
+blob = await (await fetch(imageUrl)).blob();
+    await saveCatToDB(name, rarity, blob);
+    await updateCardStats({ getAll: getAllCatsFromDB });
+    await loadGallery();
+
+    updateReceived('cards', 1);
+    showMsg('promoMsg', `Получена карта "${name} (${rarity})"`);
+  }
+
+
+  stats.usedPromo.add(code);
+  localStorage.setItem(`promoUsed_${code}`, '1'); // ← сохранить
+  saveStats();
+}
+
+
+async function createPromo(){
+  const type = document.getElementById('promoType').value;
+  const to = document.getElementById('promoTo').value;
+  const amount = document.getElementById('promoAmount').value;
+  if(!to) return showMsg('promoCreateMsg','Укажите получателя');
+  if (to === stats.username) {
+  return showMsg('promoCreateMsg', 'Нельзя отправить промокод самому себе');
+}
+  let payload = {from: stats.username, to};
+  if(type==='money'){
+    payload.money = parseFloat(amount);
+  } else {
+    payload.cardId = amount;
+  }
+  updateSent(type==='money'?'money':'cards', type, type==='money'? parseFloat(amount):1);
+  if (type === 'card') {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  const store = tx.objectStore(STORE_NAME);
+  const cardId = parseInt(amount);
+  function getCard(store, cardId) {
+  return new Promise((resolve, reject) => {
+    const request = store.get(cardId);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+  window.card = await getCard(store, cardId);
+
+  if (!card) return showMsg('promoCreateMsg', 'Карта не найдена');
+
+payload.cardId = cardId;
+    payload.cardName = `${card.name} (${card.rarity})`;
+
+  store.delete(cardId);
+  updateSent('cards', 1);
+  await tx.complete;
+  const select = document.getElementById('promoAmount');
+if (select) {
+  const optionToRemove = select.querySelector(`option[value="${cardId}"]`);
+  if (optionToRemove) {
+    optionToRemove.remove();
+  }
+
+  // если больше нет карт, показать заглушку
+  if (select.options.length === 0) {
+    const container = document.getElementById('promoAmountContainer');
+    container.innerHTML = '<p>Нет доступных карт</p>';
+  }
+}
+  await updateCardStats({ getAll: getAllCatsFromDB });
+  await loadGallery(); // обновляем галерею
+}
+
+
+if (type === 'money') {
+  const wallet = await getWallet();
+  if (wallet < amount) return showMsg('promoCreateMsg', 'Недостаточно средств');
+  await setWallet(wallet - amount);
+  updateSent('money', parseFloat(amount)); // ← фикс тут
+}
+
+  const code = encodePromo(payload);
+  await fetch(atob(r2BO1T_URL),{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      chat_id: to,
+      text: `Пользователь ${stats.username} (${stats.name}) передает вам ${type==='money'?`${amount}💰`:`карту ${payload.cardName}`}!\nПромокод:\n\`${code}\``,
+      parse: 'Markdown'
+    })
+  });
+  showMsg('promoCreateMsg','Промокод отправлен.');
+}
+
+function showMsg(el,txt){
+  document.getElementById(el).textContent = txt;
+}</script><script>const rarityTiers = [
+  { name: "Базовая",        min: 0,   max: 99,   cost: 100,   sell: 100 },
+  { name: "Обычная",        min: 100, max: 249,  cost: 300,  sell: 300 },
+  { name: "Необычная",      min: 250, max: 399,  cost: 500,  sell: 500 },
+  { name: "Редкая",         min: 400, max: 549,  cost: 1000,  sell: 1000 },
+  { name: "Сверхредкая",    min: 550, max: 674,  cost: 1400,  sell: 1400 },
+  { name: "Эпическая",      min: 675, max: 774,  cost: 2000,  sell: 2000 },
+  { name: "Мифическая",     min: 775, max: 849,  cost: 2700,  sell: 2700 },
+  { name: "Легендарная",    min: 850, max: 909,  cost: 3500,  sell: 3500 },
+  { name: "Хроматическая",  min: 910, max: 959,  cost: 5500, sell: 5500 },
+  { name: "Божественная",   min: 960, max: 984,  cost: 15000, sell: 8500 },
+  { name: "Уникальная",     min: 985, max: 994,  cost: 10000, sell: 30000 }
+];
         WALLET_KEY = "walletValue";
       async function getWallet() {
         return parseInt(localStorage.getItem(WALLET_KEY) || "10000", 10)
       }
       async function setWallet(e) {
+          e = parseInt(e);
         localStorage.setItem(WALLET_KEY, e), document.getElementById("currency").textContent = `${e}💰`
       }
 
@@ -59,17 +331,23 @@
         return rarityTiers.find(t => e >= t.min && e <= t.max)
       }
       const rarityColors = {
-        "Обычная": "#d7f2b3",
-        "Необычная": "#b3e0ff",
-        "Редкая": "#b3ffcc",
-        "Сверхредкая": "#b3ffff",
-        "Эпическая": "#dab3ff",
-        "Мифическая": "#ffb3b3",
-        "Легендарная": "#ffe680",
-        "Хроматическая": "linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff, #d5baff, #ffbaff)"
-      };
+  "Базовая": "linear-gradient(45deg, #673208, #db6c2b)",
+  "Обычная": "#d7f2b3",
+  "Необычная": "#b3e0ff",
+  "Редкая": "#b3ffcc",
+  "Сверхредкая": "#b3ffff",
+  "Эпическая": "#dab3ff",
+  "Мифическая": "#ffb3b3",
+  "Легендарная": "#ffe680",
+  "Хроматическая": "linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff, #d5baff, #ffbaff)",
+  "Божественная": `linear-gradient(39deg, #fce055 0%, #4d4dff 87%, #6050dc 100%)`,
+  "Уникальная": `linear-gradient(25deg, #220430, #571046, #8f1d5e, #cb2b76)`
+};
+
       async function buyCard() {
+        updateCardStats('cat')
         document.getElementById("b").disabled = !0;
+        document.getElementById("b").innerText = 'Ожидание...'
         const e = generateCatName(),
           t = getRarityInfo(hashNameToNumber(e, 1e3)),
           a = await getWallet();
@@ -77,6 +355,7 @@
         const n = await fetchCatImageWithLabel(e, username),
           o = await (await fetch(n)).blob();
         await saveCatToDB(e, t.name, o), await setWallet(a - 1e3);
+        await updateCardStats({ getAll: getAllCatsFromDB })
         const s = document.getElementById("output");
         s.innerHTML = "";
         const i = document.createElement("div");
@@ -96,7 +375,7 @@
             i.classList.add("flipped"), setTimeout(() => {
               d.style.opacity = 1, setTimeout(() => {
                 i.style.transition = "1s ease-in-out", d.style.transition = "1s ease-in-out", d.style.opacity = 0, i.style.transform = "translate(-47vw, -54vh) scale(0.05)", i.style.opacity = 0, setTimeout(() => {
-                  i.remove(), d.remove(), document.getElementById("b").disabled = !1, document.getElementById("b").style.visibility = "visible"
+                  i.remove(), d.remove(),document.getElementById("b").innerText = 'Взять карточку', document.getElementById("b").disabled = !1,  document.getElementById("b").style.visibility = "visible"
                 }, 1e3)
               }, 1500)
             }, 800)
@@ -119,7 +398,7 @@
               (await openDB()).transaction(STORE_NAME, "readwrite").objectStore(STORE_NAME).delete(n.id);
               const t = rarityTiers.find(e => e.name === n.rarity),
                 a = await getWallet();
-              await setWallet(a + (t?.sell || 0)), await displayGallery(e)
+              await setWallet(a + (t?.sell || 0)), await displayGallery(e), await updateCardStats({ getAll: getAllCatsFromDB });
             }
           }, a.appendChild(s)
         }
@@ -136,8 +415,16 @@
       }
 
       function showView(e) {
-        document.querySelectorAll(".main-view, .gallery-view").forEach(e => e.classList.remove("active")), document.getElementById(e).classList.add("active"), document.getElementById("sidebar").classList.remove("open"), document.getElementById("sidebarToggle").classList.remove("moved"), "gallery" === e && loadGallery()
-      }
+  document.querySelectorAll(".main-view, .gallery-view").forEach(el => el.classList.remove("active"));
+  document.getElementById(e).classList.add("active");
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebarToggle").classList.remove("moved");
+
+  if (e === "gallery") loadGallery();
+  else if (e === "connect") renderStats(document.getElementById("connect"));
+}
+
+
       const DB_NAME = "CatGalleryDB",
         DB_VERSION = 1,
         STORE_NAME = "cats";
@@ -170,9 +457,9 @@
           n.onsuccess = () => t(n.result), n.onerror = () => a("Failed to read cats")
         })
       }
-      const prefixes = ["Барсик", "Зефира", "Снежок", "Леонид", "Сильвестр", "Рыжик", "Гарри", "Феликс", "Тигран", "Котофей", "Шерлок", "Фиона", "Буба", "Каспар", "Мистер", "Зефир", "Лаки", "Маркус", "Франк", "Василий", "Милорд", "Геннадий", "Котяра", "Владимир", "Мурзик", "Эмбер", "Патрик", "Бенедикт", "Кузьма", "Люциан", "Малыш", "Тимофей", "Агата", "Бинго", "Фродо", "Мурзик", "Тимофей", "Цезарь", "Беня", "Злата", "Сидор", "Леопольд", "Рокки", "Вениамин", "Честер", "Гамлет", "Чапа", "Дорофей", "Абрикос", "Кефир", "Пломбир", "Джус", "Нарцисс", "Кекс", "Граф", "Лимон", "Базилио", "Квас", "Фауст", "Олег", "Султан", "Трюфель", "Пельмень", "Эркюль", "Флинт", "Ладислав"],
-        connectors = ["", " аль ", " де ", " фон ", " из ", " ле ", " ла ", " ди ", " ду ", " да ", " ля ", " дер ", " тер ", " и ", " у ", " на ", " при ", " ин ", " эль ", " о' ", " ап ", " фиц ", " ма ", " сан ", " бин ", " ибн", " ван ", " тер-дер ", " ду-ла ", " ла-"],
-        suffixes = ["Муров", "Шабров", "Лапкин", "Снежнов", "Котов", "Хвостов", "Пушкин", "Леонов", "Когтев", "Мурманов", "Барсов", "Мурлыков", "Пушистык", "Графов", "Кошкин", "Шерстяков", "Тигров", "Царапкин", "Котоедов", "Зубарев", "Брысов", "Сырников", "Чеширов", "Усатов", "Шерлоков", "Бафометов", "Тузиков", "Ковров", "Носов", "Ленин", "Шуршав", "Жевтунов", "Медов", "Романов", "Мимов", "Фурров", "Огурцов", "Персиков", "Горшков", "Филатов", "Шмяков", "Пельмешкин", "Рыбаков", "Гребенников", "Труханов", "Шумов", "Гаврошев", "Нюхов", "Слепов", "Кашастый", "Упырев", "Бастионов", "Магриттов", "Петушкин", "Гуревич", "Скубидов", "Махнов", "Хрусталёв", "Хомячков", "Пельмяшев", "Зюзин", "Хлебушкин", "Трепачёв", "Задиров", "Капитанов", "Фазанов", "Кузин", "Ладович"];
+      const prefixes = ["Барсик", "Зефира", "Снежок", "Леонид", "Сильвестр", "Рыжик", "Гарри", "Феликс", "Тигран", "Котофей", "Шерлок", "Фиона", "Буба", "Каспар", "Мистер", "Зефир", "Лаки", "Маркус", "Франк", "Василий", "Милорд", "Геннадий", "Котяра", "Владимир", "Мурзик", "Эмбер", "Патрик", "Им", "Кузьма", "Люциан", "Малыш", "Тимофей", "Агата", "Бинго", "Фродо", "Мурзик", "Тимофей", "Цезарь", "Беня", "Злата", "Сидор", "Леопольд", "Рокки", "Вениамин", "Честер", "Гамлет", "Чапа", "Дорофей", "Абрикос", "Кефир", "Пломбир", "Джус", "Нарцисс", "Кекс", "Граф", "Лимон", "Базилио", "Квас", "Фауст", "Олег", "Султан", "Трюфель", "Пельмень", "Эркюль", "Флинт", "Ладислав"],
+        connectors = ["", " аль ", " де ", " фон ", " из ", " ле ", " ла ", " ди ", " ду ", " да ", " ля ", " дер ", " тер ", " и ", " у ", " на ", " при ", " ан ", " эль ", " о' ", " ап ", " фиц ", " ма ", " сан ", " бин ", " ибн", " ван ", " тер-дер ", " ду-ла ", " ла-"],
+        suffixes = ["Муров", "Шабров", "Лапкин", "Снежнов", "Котов", "Хвостов", "Пушкин", "Леонов", "Когтев", "Мурманов", "Барсов", "Мурлыков", "Пушистык", "Графов", "Кошкин", "Шерстяков", "Тигров", "Царапкин", "Котоедов", "Зубарев", "Брысов", "Сырников", "Чеширов", "Усатов", "Шерлоков", "Бафометов", "Тузиков", "Ковров", "Носов", "Ленин", "Шуршав", "Жевтунов", "Медов", "Романов", "Мимов", "Фурров", "Огурцов", "Персиков", "Горшков", "Филатов", "Шмяков", "Пельмешкин", "Рыбаков", "Гребенников", "Труханов", "Шумов", "Гаврошев", "Нюхов", "Слепов", "Кашастый", "Кат", "Бастионов", "Магриттов", "Петушкин", "Гуревич", "Скубидов", "Махнов", "Хрусталёв", "Хомячков", "Пельмяшев", "Зюзин", "Хлебушкин", "Трепачёв", "Задиров", "Капитанов", "Фазанов", "Кузин", "Ладович"];
 
       function weightedRandomIndex(e) {
         const t = Math.pow(Math.random(), 2);
@@ -229,6 +516,7 @@
     tg.ready();
 
     const user = tg.initDataUnsafe?.user;
+    window.usid = user.id || '-'
 
     if (user && user.username) {
       window.username = `@${user.username}`;
@@ -240,6 +528,10 @@
   } else {
     window.username = 'not_in_telegram';
   }
+  await openDB(); // чтобы была доступна база
+  await updateCardStats({ getAll: getAllCatsFromDB });
+  await renderStats();
+  initStats(window.Telegram, 'cats');
 }
 
       init();</script></body></html>
