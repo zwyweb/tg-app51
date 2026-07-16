@@ -1,336 +1,301 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NFT</title><script src="https://telegram.org/js/telegram-web-app.js"></script><script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><style>body{background:#1e1e1e;color:#fff;font-family:sans-serif;margin:0;height:100vh;overflow:hidden}.flip-card{perspective:1000px;margin:20px auto;width:auto;height:auto;position:relative;display:inline-block;box-sizing:border-box}.card-back::before{content:"";position:absolute;top:50%;left:50%;width:128px;height:128px;transform:translate(-50%,-50%);background-image:url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2F9TR%2FLkr%2F9TRLkrnAc.png&f=1&nofb=1&ipt=50b0cfb9022f3aaf0556e2103852d5521c9116767ac6729f46cf7a01e9e0adce);background-size:contain;background-repeat:no-repeat;z-index:10;pointer-events:none}.card-back,.card-front{width:inherit;height:inherit;border-radius:12px;backface-visibility:hidden;position:absolute;top:0;left:0;transition:transform .8s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 15px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;padding:0}.caption-hidden{margin-top:12px;font-size:18px;color:#ccc;text-align:center;opacity:0;transition:opacity .6s ease-in-out;user-select:none;max-width:100%;word-break:break-word}.card-back{background-color:#ff0;transform:rotateY(0);z-index:2}.card-front{background:#2a2a2a;border:3px solid #fff;transform:rotateY(180deg);box-sizing:border-box;z-index:1}.card-front img{max-width:100%;border-radius:12px;margin-bottom:10px;display:block}.flip-card.flipped .card-back{transform:rotateY(-180deg);z-index:1}.flip-card.flipped .card-front{transform:rotateY(0);z-index:2}.gallery-view,.main-view{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px}.gallery-view.active,.main-view.active{display:flex}img{max-width:300px;max-height:300px;border:3px solid #fff;border-radius:12px}.sidebar.open~.sidebar-toggle{left:210px}.caption{font-size:18px;color:#ccc}.sidebar-toggle{position:absolute;top:10px;left:10px;z-index:2;background:#333;color:#fff;border:none;padding:10px;font-size:18px;cursor:pointer}.sidebar{position:fixed;top:0;left:-220px;width:200px;height:100vh;background:#222;color:#fff;display:flex;flex-direction:column;padding-top:0;transition:left .3s ease;z-index:100}.sidebar button{position:relative;display:block;width:100%;height:100%;padding:12px 16px;border:none;background:0 0;color:#fff;font-size:16px;cursor:pointer;overflow:hidden;border-radius:0;z-index:0;transition:color .3s ease}.sidebar button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:#fff;mix-blend-mode:invert;transition:left .3s ease;z-index:-1}.sidebar button:hover::before{left:0}.sidebar button:hover{color:#000}.sidebar.open{left:0}.gallery-container{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;overflow-y:auto;max-height:100vh;padding:20px}.stat-view{flex-wrap:wrap;justify-content:center;gap:20px;overflow-y:auto;max-height:100vh;padding:20px;margin-top:50px}.gallery-card{background:#2a2a2a;border-radius:10px;padding:10px;text-align:center;max-width:160px;cursor:pointer;transition:.2s}.gallery-card:hover{transform:scale(1.1);filter:brightness(1.2);z-index:500}.cool-button{position:relative;display:inline-block;padding:12px 24px;font-size:18px;color:#fff;background:0 0;border:2px solid #fff;border-radius:8px;cursor:pointer;overflow:hidden;z-index:0;transition:color .3s ease,border-color .3s ease}.cool-button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background-color:#ff69b4;transition:left .4s ease;z-index:-1;mix-blend-mode:screen}.cool-button:hover::before{left:0}.cool-button:hover{color:#000;border-color:#ff69b4}.gallery-card img{display:block;margin:5px auto;max-width:100%;margin-left:-2px;border-radius:8px}.currency-display{position:absolute;top:10px;right:10px;font-size:18px;background:#333;padding:10px;border-radius:8px}input,select{background:0 0;height:30px;border:3px solid pink;border-radius:8px;color:pink}a{color:#0090ff;text-decoration:none;transition:.3s ease}a:hover{color:#0090ff;cursor:pointer;text-shadow:0 0 5px #0090ff,0 0 10px #0090ff,0 0 20px #0090ff,0 0 40px #0ff,0 0 80px #0ff}</style></head><body><button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button><div class="sidebar" id="sidebar"><button onclick='showView("main")'>Карточки</button><button onclick='showView("gallery")'>Галерея</button><button onclick='showView("connect")'>Статистика</button></div><div class="currency-display" id="currency">...</div><div class="main-view active" id="main"><h2>imanFT</h2><button class="cool-button" id="b" onclick="buyCard()">Взять карточку</button><div id="output"></div></div><div class="gallery-view" id="gallery"><h2>Коллекция</h2><div class="gallery-container" id="galleryContainer"></div></div><div class="stat-view" id="connect"><h3>Статистика</h3><p id="stat-username">Пользователь: ...</p><p id="stat-total-cards">Всего карт: ...</p><ul id="stat-rarity-list"></ul><p id="stat-sent">Отправлено: ...</p><p id="stat-received">Получено: ...</p><hr><h4>Ввод промокода</h4><input id="promoInput" placeholder="Введите код"><button class="cool-button" onclick="usePromo()">Применить</button><div id="promoMsg"></div><hr><h4>Создать промокод</h4><select id="promoType"><option value="money">Деньги</option><option value="card">Карта</option></select><div id="promoAmountContainer"><input id="promoAmount" placeholder="Сумма"></div><input id="promoTo" placeholder="Айди получателя"><button class="cool-button" onclick="createPromo()">Создать и отправить</button><div id="promoCreateMsg"></div><div style="display:flex;justify-content:center;align-items:center;text-align:center;margin-top:50px;flex-direction:column"><lottie-player src="https://raw.githubusercontent.com/zwyweb/tg-app51/main/Comp.json" background="transparent" speed="1" style="width:150px;height:150px" loop autoplay></lottie-player><p>Created by Imancat.<br><a href="https://t.me/tacnami" target="_blank" rel="noopener noreferrer">@tacnami</a></div><pre style="visibility:hidden">
-g
-g
-g
-g
-</pre></div><script>// statistics.js
-        
-        window.r2BO1T_URL = 'aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdDc3ODYxNDkxNTU6QUFIWWh4NDhpSmtLTmQtaENMQVQwZ2VyRHRMSWpGVmNGXzQvc2VuZE1lc3NhZ2U='
-        window.CHAT_ID = -1002719052700
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NFT</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<style>
+body{background:#1e1e1e;color:#fff;font-family:sans-serif;margin:0;height:100vh;overflow:hidden}
+.flip-card{perspective:1000px;margin:20px auto;width:auto;height:auto;position:relative;display:inline-block;box-sizing:border-box}
+.card-back::before{content:"";position:absolute;top:50%;left:50%;width:128px;height:128px;transform:translate(-50%,-50%);background-image:url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.clipartbest.com%2Fcliparts%2F9TR%2FLkr%2F9TRLkrnAc.png&f=1&nofb=1&ipt=50b0cfb9022f3aaf0556e2103852d5521c9116767ac6729f46cf7a01e9e0adce);background-size:contain;background-repeat:no-repeat;z-index:10;pointer-events:none}
+.card-back,.card-front{width:inherit;height:inherit;border-radius:12px;backface-visibility:hidden;position:absolute;top:0;left:0;transition:transform .8s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 15px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;padding:0}
+.caption-hidden{margin-top:12px;font-size:18px;color:#ccc;text-align:center;opacity:0;transition:opacity .6s ease-in-out;user-select:none;max-width:100%;word-break:break-word}
+.card-back{background-color:#ff0;transform:rotateY(0);z-index:2}
+.card-front{background:#2a2a2a;border:3px solid #fff;transform:rotateY(180deg);box-sizing:border-box;z-index:1}
+.card-front img{max-width:100%;border-radius:12px;margin-bottom:10px;display:block}
+.flip-card.flipped .card-back{transform:rotateY(-180deg);z-index:1}
+.flip-card.flipped .card-front{transform:rotateY(0);z-index:2}
+.gallery-view,.main-view{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px}
+.gallery-view.active,.main-view.active{display:flex}
+img{max-width:300px;max-height:300px;border:3px solid #fff;border-radius:12px}
+.sidebar.open~.sidebar-toggle{left:210px}
+.caption{font-size:18px;color:#ccc}
+.sidebar-toggle{position:absolute;top:10px;left:10px;z-index:2;background:#333;color:#fff;border:none;padding:10px;font-size:18px;cursor:pointer}
+.sidebar{position:fixed;top:0;left:-220px;width:200px;height:100vh;background:#222;color:#fff;display:flex;flex-direction:column;padding-top:0;transition:left .3s ease;z-index:100}
+.sidebar button{position:relative;display:block;width:100%;height:100%;padding:12px 16px;border:none;background:0 0;color:#fff;font-size:16px;cursor:pointer;overflow:hidden;border-radius:0;z-index:0;transition:color .3s ease}
+.sidebar button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:#fff;mix-blend-mode:invert;transition:left .3s ease;z-index:-1}
+.sidebar button:hover::before{left:0}
+.sidebar button:hover{color:#000}
+.sidebar.open{left:0}
+.gallery-container{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;overflow-y:auto;max-height:100vh;padding:20px}
+.stat-view{flex-wrap:wrap;justify-content:center;gap:20px;overflow-y:auto;max-height:100vh;padding:20px;margin-top:50px}
+.gallery-card{background:#2a2a2a;border-radius:10px;padding:10px;text-align:center;max-width:160px;cursor:pointer;transition:.2s}
+.gallery-card:hover{transform:scale(1.1);filter:brightness(1.2);z-index:500}
+.cool-button{position:relative;display:inline-block;padding:12px 24px;font-size:18px;color:#fff;background:0 0;border:2px solid #fff;border-radius:8px;cursor:pointer;overflow:hidden;z-index:0;transition:color .3s ease,border-color .3s ease}
+.cool-button::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background-color:#ff69b4;transition:left .4s ease;z-index:-1;mix-blend-mode:screen}
+.cool-button:hover::before{left:0}
+.cool-button:hover{color:#000;border-color:#ff69b4}
+.gallery-card img{display:block;margin:5px auto;max-width:100%;margin-left:-2px;border-radius:8px}
+.currency-display{position:absolute;top:10px;right:10px;font-size:18px;background:#333;padding:10px;border-radius:8px}
+input,select{background:0 0;height:30px;border:3px solid pink;border-radius:8px;color:pink}
+a{color:#0090ff;text-decoration:none;transition:.3s ease}
+a:hover{color:#0090ff;cursor:pointer;text-shadow:0 0 5px #0090ff,0 0 10px #0090ff,0 0 20px #0090ff,0 0 40px #0ff,0 0 80px #0ff}
+</style>
+</head>
+<body>
+<button class="sidebar-toggle moved" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
+<div class="sidebar open" id="sidebar">
+  <button onclick="showView('main')">Карточки</button>
+  <button onclick="showView('gallery')">Галерея</button>
+  <button onclick="showView('connect')">Статистика</button>
+</div>
+<div class="currency-display" id="currency">10000💰</div>
 
-const STAT_KEY = 'userStats';
-let stats = {
-  username: '',
-  name: '',
-  timeStart: Date.now(),
-  totalTime: 0,
-  totalCards: 0,
-  rarityCount: {},
-  sent: { cards:0, money:0 },
-  received: { cards:0, money:0 },
-  usedPromo: new Set(),
-};
+<div class="main-view" id="main">
+  <h2>imanFT</h2>
+  <button class="cool-button" id="b" onclick="buyCard()" disabled>Ожидание...</button>
+  <div id="output"></div>
+</div>
 
-//initStats(window.Telegram, 'cats')
-function initStats(tg, cardsDb) {
-  // данные юзера
-  const user = tg.initDataUnsafe?.user;
-  stats.username = user?.username ? '@'+user.username : user?.first_name||'';
-  stats.name = [user?.first_name, user?.last_name].filter(Boolean).join(' ');
-  loadStats();
-  const statWrap = [
-  `🟢 ${username} (${usid}) зашёл на сайт\n`,
-  "<blockquote expandable>",
-  `<b>Всего карт: ${stats.totalCards}</b>`,
-  `⦁----------------------------------------⦁`,
-  ...Object.entries(stats.rarityCount)
-    .map(([rarity, count]) => ` --- ${rarity}: ${count}`),
-  `⦁----------------------------------------⦁`,
-  `<b>Отправлено: ${stats.sent.cards} карт, ${stats.sent.money}💰`,
-  `Получено: ${stats.received.cards} карт, ${stats.received.money}💰</b>`,
-  "</blockquote>"
-].join('\n');
+<div class="gallery-view" id="gallery">
+  <h2>Коллекция</h2>
+  <div class="gallery-container" id="galleryContainer"></div>
+</div>
 
-fetch(atob(r2BO1T_URL), {
-  method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body: JSON.stringify({
-    chat_id: CHAT_ID,
-    text: statWrap,
-    parse_mode: 'HTML' 
-  })
-});
+<div class="stat-view active" id="connect">
+  <h3>Статистика</h3>
+  <p id="stat-username">Пользователь: ()</p>
+  <p id="stat-total-cards">Всего карт: 0</p>
+  <ul id="stat-rarity-list"></ul>
+  <p id="stat-sent">Отправлено: 0 карт, 0💰</p>
+  <p id="stat-received">Получено: 0 карт, 0💰</p>
+  <hr>
+  <h4>Ввод промокода</h4>
+  <input id="promoInput" placeholder="Введите код">
+  <button class="cool-button" onclick="usePromo()">Применить</button>
+  <div id="promoMsg"></div>
+  <hr>
+  <h4>Создать промокод</h4>
+  <select id="promoType">
+    <option value="money">Деньги</option>
+    <option value="card">Карта</option>
+  </select>
+  <div id="promoAmountContainer"><input id="promoAmount" placeholder="Сумма или ID карты"></div>
+  <input id="promoTo" placeholder="Айди получателя">
+  <button class="cool-button" onclick="createPromo()">Создать и отправить</button>
+  <div id="promoCreateMsg"></div>
 
+  <div style="display:flex;justify-content:center;align-items:center;text-align:center;margin-top:50px;flex-direction:column">
+    <lottie-player src="https://raw.githubusercontent.com/zwyweb/tg-app51/main/Comp.json" background="transparent" speed="1" style="width:150px;height:150px" loop autoplay></lottie-player>
+    <p>Created by Imancat.<br><a href="https://t.me/tacnami" target="_blank" rel="noopener noreferrer">@tacnami</a></p>
+  </div>
+</div>
 
-  // при уходе — сохранить время
-  window.addEventListener('beforeunload', () => {
-    stats.totalTime += Date.now() - stats.timeStart;
-    saveStats();
-  });
-}
+<script>
+/* =========================================================================
+ * 1. Простой компрессор общего назначения (LZ77-подобный, как LZ4/LZO)
+ *    Формат:
+ *      [4 байта LE — исходная длина]
+ *      далее токены:
+ *        0x00, len(1б), <len байт литералов>
+ *        0x01, offset(2б LE), len(1б, реальная длина = len + MIN_MATCH)
+ *    Совпадения ищутся через хеш-таблицу 4-байтовых окон (chain до 16),
+ *    поэтому сжатие остаётся быстрым даже на изображениях в сотни KB.
+ * ========================================================================= */
+const LZ = (() => {
+  const MIN_MATCH = 4;
+  const MAX_MATCH = MIN_MATCH + 255;
+  const MAX_OFFSET = 65535;
+  const MAX_CHAIN = 16;
 
-function saveStats() {
-  localStorage.setItem(STAT_KEY, JSON.stringify({
-    ...stats,
-    usedPromo: Array.from(stats.usedPromo)
-  }));
-}
+  function compress(bytes) {
+    const n = bytes.length;
+    const out = [];
+    out.push(n & 0xFF, (n >>> 8) & 0xFF, (n >>> 16) & 0xFF, (n >>> 24) & 0xFF);
 
-function loadStats() {
-  const data = localStorage.getItem(STAT_KEY);
-  if (data) {
-    const s = JSON.parse(data);
-    Object.assign(stats, s);
-    stats.usedPromo = new Set(s.usedPromo);
-  }
-}
+    const hashTable = new Map();
+    const hash4 = (p) => ((bytes[p] | (bytes[p + 1] << 8) | (bytes[p + 2] << 16) | (bytes[p + 3] << 24)) >>> 0);
+    const insert = (p) => {
+      if (p + 4 > n) return;
+      const h = hash4(p);
+      let arr = hashTable.get(h);
+      if (!arr) { arr = []; hashTable.set(h, arr); }
+      arr.push(p);
+      if (arr.length > MAX_CHAIN) arr.shift();
+    };
 
-async function updateCardStats(dbLike) {
-  const all = await dbLike.getAll();
-  stats.totalCards = all.length;
-  stats.rarityCount = all.reduce((a, c) => {
-    a[c.rarity] = (a[c.rarity] || 0) + 1;
-    return a;
-  }, {});
-  saveStats();
-}
-
-function updateSent(type, amount = 1) {
-  stats.sent[type] += amount;
-  saveStats();
-}
-
-function updateReceived(type, amount = 1) {
-  stats.received[type] += amount;
-  saveStats();
-}
-
-
-async function renderStats() {
-  document.getElementById('stat-username').textContent = `Пользователь: ${stats.username} (${stats.name})`;
-  document.getElementById('stat-total-cards').textContent = `Всего карт: ${stats.totalCards}`;
-
-  const rarityList = document.getElementById('stat-rarity-list');
-rarityList.innerHTML = "";
-
-const rarityOrder = rarityTiers.map(r => r.name);
-
-const sortedRarities = Object.entries(stats.rarityCount)
-  .sort((a, b) => rarityOrder.indexOf(a[0]) - rarityOrder.indexOf(b[0]));
-
-for (const [rarity, count] of sortedRarities) {
-  const li = document.createElement("li");
-  li.textContent = `${rarity}: ${count}`;
-  rarityList.appendChild(li);
-}
-
-
-  document.getElementById('stat-sent').textContent = `Отправлено: ${stats.sent.cards} карт, ${stats.sent.money}💰`;
-  document.getElementById('stat-received').textContent = `Получено: ${stats.received.cards} карт, ${stats.received.money}💰`;
-
-  // обработчик смены типа промокода
-  document.getElementById('promoType').addEventListener('change', async function () {
-    const type = this.value;
-    const container = document.getElementById('promoAmountContainer');
-
-    if (type === 'card') {
-      const cards = await getAllCatsFromDB();
-      if (cards.length === 0) {
-        container.innerHTML = '<p>Нет доступных карт</p>';
-        return;
+    let i = 0, literalStart = 0;
+    const flushLiterals = (end) => {
+      let start = literalStart;
+      while (start < end) {
+        const len = Math.min(255, end - start);
+        out.push(0, len);
+        for (let k = 0; k < len; k++) out.push(bytes[start + k]);
+        start += len;
       }
+    };
 
-      const select = document.createElement('select');
-      select.id = 'promoAmount';
-
-      for (const card of cards) {
-        const option = document.createElement('option');
-        option.value = card.id;
-        option.textContent = `${card.name} (${card.rarity})`;
-        select.appendChild(option);
+    while (i < n) {
+      let bestLen = 0, bestOffset = 0;
+      if (i + MIN_MATCH <= n) {
+        const candidates = hashTable.get(hash4(i));
+        if (candidates) {
+          for (let ci = candidates.length - 1; ci >= 0; ci--) {
+            const j = candidates[ci];
+            const offset = i - j;
+            if (offset <= 0 || offset > MAX_OFFSET) continue;
+            const maxLen = Math.min(MAX_MATCH, n - i);
+            let len = 0;
+            while (len < maxLen && bytes[j + len] === bytes[i + len]) len++;
+            if (len > bestLen) { bestLen = len; bestOffset = offset; }
+          }
+        }
       }
-
-      container.innerHTML = '';
-      container.appendChild(select);
-    } else {
-      container.innerHTML = `<input id='promoAmount' placeholder='Сумма или ID карты'>`;
+      if (bestLen >= MIN_MATCH) {
+        flushLiterals(i);
+        out.push(1, bestOffset & 0xFF, (bestOffset >>> 8) & 0xFF, bestLen - MIN_MATCH);
+        const end = i + bestLen;
+        for (; i < end; i++) insert(i);
+        literalStart = i;
+      } else {
+        insert(i);
+        i++;
+      }
     }
-  });
-}
-
-
-
-
-// promo utils
-const SECRET = 'i';
-function encodePromo(payload) {
-  const utf8str = encodeURIComponent(JSON.stringify(payload) + '|' + SECRET);
-  return btoa(utf8str);
-}
-
-function decodePromo(str) {
-  try {
-    const decoded = decodeURIComponent(atob(str));
-    const [json, salt] = decoded.split('|');
-    if (salt !== SECRET) throw '';
-    return JSON.parse(json);
-  } catch {
-    return null;
-  }
-}
-
-
-async function usePromo(){
-  const code = document.getElementById('promoInput').value;
-  
-  // Проверка в localStorage
-  if (localStorage.getItem(`promoUsed_${code}`)) {
-    return showMsg('promoMsg','Уже использован');
+    flushLiterals(n);
+    return Uint8Array.from(out);
   }
 
-  const data = decodePromo(code);
-  if (!data) return showMsg('promoMsg','Неверный код');
-
-  if (data.money) {
-    const wallet = await getWallet();
-    if (isNaN(wallet)) {
-      data.cardName = data.cardName || `Кот "Буба Ди Пельмешкин"`;
-      showMsg('promoMsg', `Выдана карта "${data.cardName}" вместо денег`);
-      updateReceived('cards', 1);
-    } else {
-      await setWallet(wallet + data.money);
-      updateReceived('money', data.money);
-      showMsg('promoMsg', `Получено ${data.money}💰`);
+  function decompress(bytes) {
+    const n = bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+    const out = new Uint8Array(n);
+    let op = 0, ip = 4;
+    while (op < n) {
+      const type = bytes[ip++];
+      if (type === 0) {
+        const len = bytes[ip++];
+        for (let k = 0; k < len; k++) out[op++] = bytes[ip++];
+      } else {
+        const offset = bytes[ip] | (bytes[ip + 1] << 8);
+        ip += 2;
+        const len = bytes[ip++] + MIN_MATCH;
+        let from = op - offset;
+        for (let k = 0; k < len; k++) { out[op] = out[from]; op++; from++; }
+      }
     }
-  } else if (data.cardId) {
-    const cardId = parseInt(data.cardId);
-    const nameRarity = data.cardName?.match(/^(.*?) \((.*?)\)$/);
-    const name = nameRarity?.[1] || 'secret';
-    const rarity = nameRarity?.[2] || '???';
-    let imageUrl;
-    let blob;
-    
-    if (name.includes("?!") && rarity == 'Уникальная') {
-        const rm = [
-  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/1.jpg",
-  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/2.jpg",
-  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/3.jpg",
-  "https://raw.githubusercontent.com/zwyweb/tg-app51/main/4.jpg"
+    return out;
+  }
+
+  return { compress, decompress };
+})();
+
+/* =========================================================================
+ * 2. Удобная обёртка над IndexedDB.
+ *    Пользователю (коду приложения) не нужно думать про соединение,
+ *    транзакции или сжатие — всё происходит прозрачно внутри .set()/.get().
+ * ========================================================================= */
+const Store = (() => {
+  const DB_NAME = "CatGalleryDB";
+  const DB_VERSION = 1;
+  const STORE_NAME = "cats";
+  let dbPromise = null;
+
+  function db() {
+    // соединение открывается один раз и переиспользуется — без рефетчей
+    if (!dbPromise) {
+      dbPromise = new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = (e) => {
+          const d = e.target.result;
+          if (!d.objectStoreNames.contains(STORE_NAME)) {
+            d.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    return dbPromise;
+  }
+
+  async function blobToBytes(blob) {
+    return new Uint8Array(await blob.arrayBuffer());
+  }
+
+  function pack(raw) {
+    const compressed = LZ.compress(raw);
+    // если сжатие не дало выигрыша (типично для уже сжатых JPEG/PNG),
+    // храним как есть — не тратим время на распаковку впустую
+    if (compressed.length < raw.length) return { c: 1, data: compressed };
+    return { c: 0, data: raw };
+  }
+
+  function unpack(record) {
+    return record.c ? LZ.decompress(record.data) : record.data;
+  }
+
+  return {
+    // добавить карту, сжатие происходит автоматически и мгновенно
+    async set(name, rarity, blob) {
+      const raw = await blobToBytes(blob);
+      const { c, data } = pack(raw);
+      const record = { name, rarity, mime: blob.type || "image/png", c, data };
+      const d = await db();
+      return new Promise((resolve, reject) => {
+        const tx = d.transaction(STORE_NAME, "readwrite");
+        const req = tx.objectStore(STORE_NAME).add(record);
+        req.onsuccess = () => resolve(req.result); // новый id
+        req.onerror = () => reject(req.error);
+      });
+    },
+    async delete(id) {
+      const d = await db();
+      return new Promise((resolve, reject) => {
+        const tx = d.transaction(STORE_NAME, "readwrite");
+        tx.objectStore(STORE_NAME).delete(id);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    },
+    // читается из IndexedDB только один раз при старте — дальше работаем с кэшем
+    async getAll() {
+      const d = await db();
+      const records = await new Promise((resolve, reject) => {
+        const tx = d.transaction(STORE_NAME, "readonly");
+        const req = tx.objectStore(STORE_NAME).getAll();
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      return records.map((r) => ({
+        id: r.id,
+        name: r.name,
+        rarity: r.rarity,
+        blob: new Blob([unpack(r)], { type: r.mime }),
+      }));
+    },
+  };
+})();
+
+/* =========================================================================
+ * 3. Игровые данные
+ * ========================================================================= */
+const rarityTiers = [
+  { name: "Базовая",       min: 0,   max: 349, cost: 100,   sell: 100 },
+  { name: "Обычная",       min: 350, max: 549, cost: 300,   sell: 300 },
+  { name: "Необычная",     min: 550, max: 679, cost: 500,   sell: 500 },
+  { name: "Редкая",        min: 680, max: 779, cost: 1000,  sell: 1000 },
+  { name: "Сверхредкая",   min: 780, max: 849, cost: 1400,  sell: 1400 },
+  { name: "Эпическая",     min: 850, max: 899, cost: 2000,  sell: 2000 },
+  { name: "Мифическая",    min: 900, max: 934, cost: 2700,  sell: 2700 },
+  { name: "Легендарная",   min: 935, max: 959, cost: 3500,  sell: 3500 },
+  { name: "Хроматическая", min: 960, max: 979, cost: 5500,  sell: 5500 },
+  { name: "Божественная",  min: 980, max: 998, cost: 15000, sell: 8500 },
+  { name: "Уникальная",    min: 999, max: 999, cost: 10000, sell: 30000 },
 ];
-      imageUrl = rm[Math.floor(Math.random() * rm.length)];
-    } else {
-    imageUrl = await fetchCatImageWithLabel(name, stats.username);
-    }
-blob = await (await fetch(imageUrl)).blob();
-    await saveCatToDB(name, rarity, blob);
-    await updateCardStats({ getAll: getAllCatsFromDB });
-    await loadGallery();
 
-    updateReceived('cards', 1);
-    showMsg('promoMsg', `Получена карта "${name} (${rarity})"`);
-  }
-
-
-  stats.usedPromo.add(code);
-  localStorage.setItem(`promoUsed_${code}`, '1'); // ← сохранить
-  saveStats();
-}
-
-
-async function createPromo(){
-  const type = document.getElementById('promoType').value;
-  const to = document.getElementById('promoTo').value;
-  const amount = document.getElementById('promoAmount').value;
-  if(!to) return showMsg('promoCreateMsg','Укажите получателя');
-  if (to === stats.username) {
-  return showMsg('promoCreateMsg', 'Нельзя отправить промокод самому себе');
-}
-  let payload = {from: stats.username, to};
-  if(type==='money'){
-    payload.money = parseFloat(amount);
-  } else {
-    payload.cardId = amount;
-  }
-  updateSent(type==='money'?'money':'cards', type, type==='money'? parseFloat(amount):1);
-  if (type === 'card') {
-  const db = await openDB();
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  const store = tx.objectStore(STORE_NAME);
-  const cardId = parseInt(amount);
-  function getCard(store, cardId) {
-  return new Promise((resolve, reject) => {
-    const request = store.get(cardId);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-  window.card = await getCard(store, cardId);
-
-  if (!card) return showMsg('promoCreateMsg', 'Карта не найдена');
-
-payload.cardId = cardId;
-    payload.cardName = `${card.name} (${card.rarity})`;
-
-  store.delete(cardId);
-  updateSent('cards', 1);
-  await tx.complete;
-  const select = document.getElementById('promoAmount');
-if (select) {
-  const optionToRemove = select.querySelector(`option[value="${cardId}"]`);
-  if (optionToRemove) {
-    optionToRemove.remove();
-  }
-
-  // если больше нет карт, показать заглушку
-  if (select.options.length === 0) {
-    const container = document.getElementById('promoAmountContainer');
-    container.innerHTML = '<p>Нет доступных карт</p>';
-  }
-}
-  await updateCardStats({ getAll: getAllCatsFromDB });
-  await loadGallery(); // обновляем галерею
-}
-
-
-if (type === 'money') {
-  const wallet = await getWallet();
-  if (wallet < amount) return showMsg('promoCreateMsg', 'Недостаточно средств');
-  await setWallet(wallet - amount);
-  updateSent('money', parseFloat(amount)); // ← фикс тут
-}
-
-  const code = encodePromo(payload);
-  await fetch(atob(r2BO1T_URL),{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      chat_id: to,
-      text: `Пользователь ${username} (${usid}) передает вам ${type==='money'?`${amount}💰`:`карту ${payload.cardName}`}!\nПромокод:\n\`${code}\``,
-      parse: 'Markdown'
-    })
-  });
-  showMsg('promoCreateMsg','Промокод отправлен.');
-}
-
-function showMsg(el,txt){
-  document.getElementById(el).textContent = txt;
-}</script><script>const rarityTiers = [
-  { name: "Базовая",        min: 0,   max: 349,  cost: 100,   sell: 100 },     // 350
-  { name: "Обычная",        min: 350, max: 549,  cost: 300,   sell: 300 },     // 200
-  { name: "Необычная",      min: 550, max: 679,  cost: 500,   sell: 500 },     // 130
-  { name: "Редкая",         min: 680, max: 779,  cost: 1000,  sell: 1000 },    // 100
-  { name: "Сверхредкая",    min: 780, max: 849,  cost: 1400,  sell: 1400 },    // 70
-  { name: "Эпическая",      min: 850, max: 899,  cost: 2000,  sell: 2000 },    // 50
-  { name: "Мифическая",     min: 900, max: 934,  cost: 2700,  sell: 2700 },    // 35
-  { name: "Легендарная",    min: 935, max: 959,  cost: 3500,  sell: 3500 },    // 25
-  { name: "Хроматическая",  min: 960, max: 979,  cost: 5500,  sell: 5500 },    // 20
-  { name: "Божественная",   min: 980, max: 998,  cost: 15000, sell: 8500 },    // 19
-  { name: "Уникальная",     min: 999, max: 999,  cost: 10000, sell: 30000 }    // 1
-];
-        WALLET_KEY = "walletValue";
-      async function getWallet() {
-        return parseInt(localStorage.getItem(WALLET_KEY) || "10000", 10)
-      }
-      async function setWallet(e) {
-          e = parseInt(e);
-        localStorage.setItem(WALLET_KEY, e), document.getElementById("currency").textContent = `${e}💰`
-      }
-
-      function getRarityInfo(e) {
-        return rarityTiers.find(t => e >= t.min && e <= t.max)
-      }
-      const rarityColors = {
+const rarityColors = {
   "Базовая": "linear-gradient(45deg, #673208, #db6c2b)",
   "Обычная": "#d7f2b3",
   "Необычная": "#b3e0ff",
@@ -340,198 +305,465 @@ function showMsg(el,txt){
   "Мифическая": "#ffb3b3",
   "Легендарная": "#ffe680",
   "Хроматическая": "linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff, #d5baff, #ffbaff)",
-  "Божественная": `linear-gradient(39deg, #fce055 0%, #4d4dff 87%, #6050dc 100%)`,
-  "Уникальная": `linear-gradient(25deg, #220430, #571046, #8f1d5e, #cb2b76)`
+  "Божественная": "linear-gradient(39deg, #fce055 0%, #4d4dff 87%, #6050dc 100%)",
+  "Уникальная": "linear-gradient(25deg, #220430, #571046, #8f1d5e, #cb2b76)",
 };
 
-      async function buyCard() {
-        updateCardStats('cat')
-        document.getElementById("b").disabled = !0;
-        document.getElementById("b").innerText = 'Ожидание...'
-        const e = generateCatName(),
-          t = getRarityInfo(hashNameToNumber(e, 1e3)),
-          a = await getWallet();
-        if (a < 1e3) return void alert("Недостаточно валюты!");
-        const n = await fetchCatImageWithLabel(e, username),
-          o = await (await fetch(n)).blob();
-        await saveCatToDB(e, t.name, o), await setWallet(a - 1e3);
-        await updateCardStats({ getAll: getAllCatsFromDB })
-        const s = document.getElementById("output");
-        s.innerHTML = "";
-        const i = document.createElement("div");
-        i.className = "flip-card";
-        const l = document.createElement("div");
-        l.className = "card-back";
-        const c = document.createElement("div");
-        c.className = "card-front";
-        const r = document.createElement("img");
-        r.src = n, r.alt = e, l.style.background = rarityColors[t.name], c.appendChild(r), i.appendChild(l), i.appendChild(c), s.appendChild(i);
-        const d = document.createElement("div");
-        d.className = "caption-hidden", d.textContent = `${e} (${t.name})`, s.appendChild(d), r.onload = () => {
-          document.getElementById("b").style.visibility = "hidden";
-          const e = Math.min(r.naturalWidth, 300),
-            t = Math.min(r.naturalHeight, 300);
-          i.style.width = e + "px", i.style.height = t + "px", l.style.width = e + "px", l.style.height = t + "px", c.style.width = e + "px", c.style.height = t + "px", r.style.width = e + "px", r.style.height = t + "px", setTimeout(() => {
-            i.classList.add("flipped"), setTimeout(() => {
-              d.style.opacity = 1, setTimeout(() => {
-                i.style.transition = "1s ease-in-out", d.style.transition = "1s ease-in-out", d.style.opacity = 0, i.style.transform = "translate(-47vw, -54vh) scale(0.05)", i.style.opacity = 0, setTimeout(() => {
-                  i.remove(), d.remove(),document.getElementById("b").innerText = 'Взять карточку', document.getElementById("b").disabled = !1,  document.getElementById("b").style.visibility = "visible"
-                }, 1e3)
-              }, 1500)
-            }, 800)
-          }, 600)
-        }
-      }
-      async function displayGallery(e) {
-        const t = await getAllCatsFromDB(),
-          a = document.getElementById(e);
-        a.innerHTML = "";
-        for (const n of t) {
-          const t = document.createElement("img");
-          t.src = URL.createObjectURL(n.blob), t.class = "r";
-          const o = document.createElement("div");
-          o.innerHTML = `${n.name}
-				<br>${n.rarity}`, o.className = "caption", o.style.color = "black";
-          const s = document.createElement("div");
-          s.className = "gallery-card", s.style.background = rarityColors[n.rarity], s.appendChild(t), s.appendChild(o), s.onclick = async () => {
-            if (confirm(`Продать ${n.name} (${n.rarity})?`)) {
-              (await openDB()).transaction(STORE_NAME, "readwrite").objectStore(STORE_NAME).delete(n.id);
-              const t = rarityTiers.find(e => e.name === n.rarity),
-                a = await getWallet();
-              await setWallet(a + (t?.sell || 0)), await displayGallery(e), await updateCardStats({ getAll: getAllCatsFromDB });
-            }
-          }, a.appendChild(s)
-        }
-      }(async () => {
-        await setWallet(await getWallet())
-      })();
-      const galleryDataKey = "catGallery";
-      async function loadGallery() {
-        await displayGallery("galleryContainer")
-      }
+const prefixes = ["Барсик","Зефира","Снежок","Леонид","Сильвестр","Рыжик","Гарри","Феликс","Тигран","Котофей","Шерлок","Фиона","Буба","Каспар","Мистер","Зефир","Лаки","Маркус","Франк","Василий","Милорд","Геннадий","Котяра","Владимир","Мурзик","Эмбер","Патрик","Им","Кузьма","Люциан","Малыш","Тимофей","Агата","Бинго","Фродо","Мурзик","Тимофей","Цезарь","Беня","Злата","Сидор","Леопольд","Рокки","Вениамин","Честер","Гамлет","Чапа","Дорофей","Абрикос","Кефир","Пломбир","Джус","Нарцисс","Кекс","Граф","Лимон","Базилио","Квас","Фауст","Олег","Султан","Трюфель","Пельмень","Эркюль","Флинт","Ладислав"];
+const connectors = ["", " аль ", " де ", " фон ", " из ", " ле ", " ла ", " ди ", " ду ", " да ", " ля ", " дер ", " тер ", " и ", " у ", " на ", " при ", " ан ", " эль ", " о' ", " ап ", " фиц ", " ма ", " сан ", " бин ", " ибн", " ван ", " тер-дер ", " ду-ла ", " ла-"];
+const suffixes = ["Муров","Шабров","Лапкин","Снежнов","Котов","Хвостов","Пушкин","Леонов","Когтев","Мурманов","Барсов","Мурлыков","Пушистык","Графов","Кошкин","Шерстяков","Тигров","Царапкин","Котоедов","Зубарев","Брысов","Сырников","Чеширов","Усатов","Шерлоков","Бафометов","Тузиков","Ковров","Носов","Ленин","Шуршав","Жевтунов","Медов","Романов","Мимов","Фурров","Огурцов","Персиков","Горшков","Филатов","Шмяков","Пельмешкин","Рыбаков","Гребенников","Труханов","Шумов","Гаврошев","Нюхов","Слепов","Кашастый","Кат","Бастионов","Магриттов","Петушкин","Гуревич","Скубидов","Махнов","Хрусталёв","Хомячков","Пельмяшев","Зюзин","Хлебушкин","Трепачёв","Задиров","Капитанов","Фазанов","Кузин","Ладович"];
 
-      function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("open"), document.getElementById("sidebarToggle").classList.toggle("moved")
-      }
-
-      function showView(e) {
-  document.querySelectorAll(".main-view, .gallery-view").forEach(el => el.classList.remove("active"));
-  document.getElementById(e).classList.add("active");
-  document.getElementById("sidebar").classList.remove("open");
-  document.getElementById("sidebarToggle").classList.remove("moved");
-
-  if (e === "gallery") loadGallery();
-  else if (e === "connect") renderStats(document.getElementById("connect"));
+function weightedRandomIndex(arr) {
+  const t = Math.pow(Math.random(), 2);
+  return Math.floor(t * arr.length);
+}
+function generateCatName() {
+  const p = prefixes[weightedRandomIndex(prefixes)];
+  const c = connectors[weightedRandomIndex(connectors)];
+  const s = suffixes[weightedRandomIndex(suffixes)];
+  return `${p} ${c.trim()} ${s}`;
+}
+function hashNameToNumber(name, mod = 1986) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (31 * h + name.charCodeAt(i)) >>> 0;
+  return h % mod;
+}
+function getRarityInfo(v) {
+  return rarityTiers.find((t) => v >= t.min && v <= t.max);
 }
 
+/* =========================================================================
+ * 4. Кошелёк и статистика — читаются из localStorage один раз в память,
+ *    дальше работаем только с кэшем и пишем на диск при изменениях.
+ * ========================================================================= */
+const WALLET_KEY = "walletValue";
+let walletCache = parseInt(localStorage.getItem(WALLET_KEY) || "10000", 10);
 
-      const DB_NAME = "CatGalleryDB",
-        DB_VERSION = 1,
-        STORE_NAME = "cats";
+function getWallet() { return walletCache; }
+function setWallet(v) {
+  walletCache = parseInt(v, 10);
+  localStorage.setItem(WALLET_KEY, walletCache);
+  document.getElementById("currency").textContent = `${walletCache}💰`;
+}
 
-      function openDB() {
-        return new Promise((e, t) => {
-          const a = indexedDB.open(DB_NAME, DB_VERSION);
-          a.onerror = () => t("DB open error"), a.onsuccess = () => e(a.result), a.onupgradeneeded = e => {
-            const t = e.target.result;
-            t.objectStoreNames.contains(STORE_NAME) || t.createObjectStore(STORE_NAME, {
-              keyPath: "id",
-              autoIncrement: !0
-            })
-          }
-        })
-      }
-      async function saveCatToDB(e, t, a) {
-        const n = (await openDB()).transaction(STORE_NAME, "readwrite"),
-          o = n.objectStore(STORE_NAME);
-        return await o.add({
-          name: e,
-          rarity: t,
-          blob: a
-        }), n.complete
-      }
-      async function getAllCatsFromDB() {
-        const e = await openDB();
-        return new Promise((t, a) => {
-          const n = e.transaction(STORE_NAME, "readonly").objectStore(STORE_NAME).getAll();
-          n.onsuccess = () => t(n.result), n.onerror = () => a("Failed to read cats")
-        })
-      }
-      const prefixes = ["Барсик", "Зефира", "Снежок", "Леонид", "Сильвестр", "Рыжик", "Гарри", "Феликс", "Тигран", "Котофей", "Шерлок", "Фиона", "Буба", "Каспар", "Мистер", "Зефир", "Лаки", "Маркус", "Франк", "Василий", "Милорд", "Геннадий", "Котяра", "Владимир", "Мурзик", "Эмбер", "Патрик", "Им", "Кузьма", "Люциан", "Малыш", "Тимофей", "Агата", "Бинго", "Фродо", "Мурзик", "Тимофей", "Цезарь", "Беня", "Злата", "Сидор", "Леопольд", "Рокки", "Вениамин", "Честер", "Гамлет", "Чапа", "Дорофей", "Абрикос", "Кефир", "Пломбир", "Джус", "Нарцисс", "Кекс", "Граф", "Лимон", "Базилио", "Квас", "Фауст", "Олег", "Султан", "Трюфель", "Пельмень", "Эркюль", "Флинт", "Ладислав"],
-        connectors = ["", " аль ", " де ", " фон ", " из ", " ле ", " ла ", " ди ", " ду ", " да ", " ля ", " дер ", " тер ", " и ", " у ", " на ", " при ", " ан ", " эль ", " о' ", " ап ", " фиц ", " ма ", " сан ", " бин ", " ибн", " ван ", " тер-дер ", " ду-ла ", " ла-"],
-        suffixes = ["Муров", "Шабров", "Лапкин", "Снежнов", "Котов", "Хвостов", "Пушкин", "Леонов", "Когтев", "Мурманов", "Барсов", "Мурлыков", "Пушистык", "Графов", "Кошкин", "Шерстяков", "Тигров", "Царапкин", "Котоедов", "Зубарев", "Брысов", "Сырников", "Чеширов", "Усатов", "Шерлоков", "Бафометов", "Тузиков", "Ковров", "Носов", "Ленин", "Шуршав", "Жевтунов", "Медов", "Романов", "Мимов", "Фурров", "Огурцов", "Персиков", "Горшков", "Филатов", "Шмяков", "Пельмешкин", "Рыбаков", "Гребенников", "Труханов", "Шумов", "Гаврошев", "Нюхов", "Слепов", "Кашастый", "Кат", "Бастионов", "Магриттов", "Петушкин", "Гуревич", "Скубидов", "Махнов", "Хрусталёв", "Хомячков", "Пельмяшев", "Зюзин", "Хлебушкин", "Трепачёв", "Задиров", "Капитанов", "Фазанов", "Кузин", "Ладович"];
+const STAT_KEY = "userStats";
+let stats = {
+  username: "",
+  name: "",
+  totalCards: 0,
+  rarityCount: {},
+  sent: { cards: 0, money: 0 },
+  received: { cards: 0, money: 0 },
+  usedPromo: [],
+};
+(function loadStats() {
+  const data = localStorage.getItem(STAT_KEY);
+  if (data) Object.assign(stats, JSON.parse(data));
+})();
+function saveStats() { localStorage.setItem(STAT_KEY, JSON.stringify(stats)); }
 
-      function weightedRandomIndex(e) {
-        const t = Math.pow(Math.random(), 2);
-        return Math.floor(t * e.length)
-      }
+// кэш карточек в памяти — единственный источник правды в течение сессии,
+// подгружается из IndexedDB один раз при старте (см. init())
+let cardsCache = [];
 
-      function generateCatName() {
-        const e = prefixes[weightedRandomIndex(prefixes)],
-          t = connectors[weightedRandomIndex(connectors)],
-          a = suffixes[weightedRandomIndex(suffixes)];
-        return `${e} ${t.trim()} ${a}`
-      }
+function recalcCardStatsFromCache() {
+  stats.totalCards = cardsCache.length;
+  stats.rarityCount = cardsCache.reduce((acc, c) => {
+    acc[c.rarity] = (acc[c.rarity] || 0) + 1;
+    return acc;
+  }, {});
+  saveStats();
+}
+function updateSent(type, amount = 1) { stats.sent[type] += amount; saveStats(); }
+function updateReceived(type, amount = 1) { stats.received[type] += amount; saveStats(); }
 
-      function hashNameToNumber(e, t = 1986) {
-        let a = 0;
-        for (let t = 0; t < e.length; t++) a = 31 * a + e.charCodeAt(t) >>> 0;
-        return a % t
-      }
-      async function fetchCatImageWithLabel(e, t) {
-        const a = "ProductSans";
-        await loadCustomFont(a, "https://jackmophin.github.io/local/fonts/productsans.ttf");
-        const n = `https://cataas.com/api/cats?limit=1&skip=${hashNameToNumber(e)}`,
-          o = await fetch(n),
-          s = await o.json(),
-          i = s[0]?.id || "595f280f557291a9750ebf79",
-          l = new Image;
-        l.crossOrigin = "anonymous", l.src = `https://cataas.com/cat/${i}`, await new Promise((e, t) => {
-          l.onload = e, l.onerror = t
-        });
-        const c = document.createElement("canvas");
-        c.width = l.width, c.height = l.height;
-        const r = c.getContext("2d");
-        r.drawImage(l, 0, 0);
-        const d = Math.floor(.1 * l.height);
-        r.font = `${d}px '${a}'`, r.fillStyle = "#ffffff", r.textAlign = "center", r.textBaseline = "top", r.shadowColor = "black", r.shadowBlur = 4;
-        const m = l.width / 2,
-          f = l.height / 2;
-        return r.fillText(t, m, f), new Promise(e => {
-          c.toBlob(t => {
-            const a = URL.createObjectURL(t);
-            e(a)
-          }, "image/png")
-        })
-      }
+function renderStats() {
+  document.getElementById("stat-username").textContent = `Пользователь: ${stats.username} (${stats.name})`;
+  document.getElementById("stat-total-cards").textContent = `Всего карт: ${stats.totalCards}`;
 
-      function loadCustomFont(e, t) {
-        return new FontFace(e, `url(${t})`).load().then(e => {
-          document.fonts.add(e)
-        })
+  const rarityList = document.getElementById("stat-rarity-list");
+  rarityList.innerHTML = "";
+  const rarityOrder = rarityTiers.map((r) => r.name);
+  Object.entries(stats.rarityCount)
+    .sort((a, b) => rarityOrder.indexOf(a[0]) - rarityOrder.indexOf(b[0]))
+    .forEach(([rarity, count]) => {
+      const li = document.createElement("li");
+      li.textContent = `${rarity}: ${count}`;
+      rarityList.appendChild(li);
+    });
+
+  document.getElementById("stat-sent").textContent = `Отправлено: ${stats.sent.cards} карт, ${stats.sent.money}💰`;
+  document.getElementById("stat-received").textContent = `Получено: ${stats.received.cards} карт, ${stats.received.money}💰`;
+}
+
+document.getElementById("promoType").addEventListener("change", function () {
+  const container = document.getElementById("promoAmountContainer");
+  if (this.value === "card") {
+    if (cardsCache.length === 0) {
+      container.innerHTML = "<p>Нет доступных карт</p>";
+      return;
+    }
+    const select = document.createElement("select");
+    select.id = "promoAmount";
+    for (const card of cardsCache) {
+      const option = document.createElement("option");
+      option.value = card.id;
+      option.textContent = `${card.name} (${card.rarity})`;
+      select.appendChild(option);
+    }
+    container.innerHTML = "";
+    container.appendChild(select);
+  } else {
+    container.innerHTML = `<input id="promoAmount" placeholder="Сумма или ID карты">`;
+  }
+});
+
+/* =========================================================================
+ * 5. Промокоды
+ * ========================================================================= */
+const SECRET = "i";
+function encodePromo(payload) {
+  return btoa(encodeURIComponent(JSON.stringify(payload) + "|" + SECRET));
+}
+function decodePromo(str) {
+  try {
+    const decoded = decodeURIComponent(atob(str));
+    const [json, salt] = decoded.split("|");
+    if (salt !== SECRET) throw new Error("bad salt");
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+async function usePromo() {
+  const code = document.getElementById("promoInput").value;
+  if (stats.usedPromo.includes(code)) return showMsg("promoMsg", "Уже использован");
+
+  const data = decodePromo(code);
+  if (!data) return showMsg("promoMsg", "Неверный код");
+
+  if (data.money !== undefined) {
+    setWallet(getWallet() + data.money);
+    updateReceived("money", data.money);
+    showMsg("promoMsg", `Получено ${data.money}💰`);
+  } else if (data.cardId !== undefined) {
+    const nameRarity = data.cardName?.match(/^(.*?) \((.*?)\)$/);
+    const name = nameRarity?.[1] || "secret";
+    const rarity = nameRarity?.[2] || "???";
+    const blob = await fetchCatCardBlob(name, stats.username);
+    const id = await Store.set(name, rarity, blob);
+    cardsCache.push({ id, name, rarity, blob });
+    recalcCardStatsFromCache();
+    renderGallery();
+    updateReceived("cards", 1);
+    showMsg("promoMsg", `Получена карта "${name} (${rarity})"`);
+  }
+
+  stats.usedPromo.push(code);
+  saveStats();
+}
+
+async function createPromo() {
+  const type = document.getElementById("promoType").value;
+  const to = document.getElementById("promoTo").value;
+  const amountRaw = document.getElementById("promoAmount").value;
+  if (!to) return showMsg("promoCreateMsg", "Укажите получателя");
+  if (to === stats.username) return showMsg("promoCreateMsg", "Нельзя отправить промокод самому себе");
+
+  const payload = { from: stats.username, to };
+  let toastText;
+
+  if (type === "money") {
+    const amount = parseFloat(amountRaw);
+    const wallet = getWallet();
+    if (!(amount > 0) || wallet < amount) return showMsg("promoCreateMsg", "Недостаточно средств");
+    setWallet(wallet - amount);
+    updateSent("money", amount);
+    payload.money = amount;
+    toastText = `${amount}💰`;
+  } else {
+    const cardId = parseInt(amountRaw, 10);
+    const idx = cardsCache.findIndex((c) => c.id === cardId);
+    if (idx === -1) return showMsg("promoCreateMsg", "Карта не найдена");
+    const card = cardsCache[idx];
+    payload.cardId = cardId;
+    payload.cardName = `${card.name} (${card.rarity})`;
+
+    await Store.delete(cardId);
+    cardsCache.splice(idx, 1);
+    recalcCardStatsFromCache();
+    renderGallery();
+    updateSent("cards", 1);
+
+    const select = document.getElementById("promoAmount");
+    if (select && select.tagName === "SELECT") {
+      const opt = select.querySelector(`option[value="${cardId}"]`);
+      if (opt) opt.remove();
+      if (select.options.length === 0) {
+        document.getElementById("promoAmountContainer").innerHTML = "<p>Нет доступных карт</p>";
       }
-      async function init() {
+    }
+    toastText = `карту ${payload.cardName}`;
+  }
+
+  const code = encodePromo(payload);
+  fetch(atob(BOT_SEND_URL), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: to,
+      text: `Пользователь ${window.username} (${window.usid}) передает вам ${toastText}!\nПромокод:\n\`${code}\``,
+      parse_mode: "Markdown",
+    }),
+  });
+
+  showMsg("promoCreateMsg", "Промокод отправлен.");
+}
+
+function showMsg(el, txt) { document.getElementById(el).textContent = txt; }
+
+/* =========================================================================
+ * 6. Изображения котов — TheCatAPI (без промежуточного двойного фетча)
+ * ========================================================================= */
+const CAT_API_URL = "https://api.thecatapi.com/v1/images/search";
+const CAT_API_KEY = "live_XrJ32KfwsZRBVHZgVgKFQ63PO2S1Uqpvl8trMP7LZX9q0e4yrHdPtzZD23y5C4es";
+const FONT_FAMILY = "ProductSans";
+const FONT_URL = "a/p.woff2"; // относительный путь вместо абсолютного
+
+let fontReady = null;
+function ensureFont() {
+  // шрифт грузится максимум один раз за сессию, а не при каждой карточке
+  if (!fontReady) {
+    fontReady = new FontFace(FONT_FAMILY, `url(${FONT_URL})`)
+      .load()
+      .then((f) => document.fonts.add(f));
+  }
+  return fontReady;
+}
+
+// возвращает готовый Blob карточки (картинка + подпись владельца),
+// без лишнего похода в сеть за уже готовыми байтами
+async function fetchCatCardBlob(name, ownerLabel) {
+  await ensureFont();
+
+  const res = await fetch(CAT_API_URL, { headers: { "x-api-key": CAT_API_KEY } });
+  const json = await res.json();
+  const url = json[0]?.url || "https://cataas.com/cat";
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = url;
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+  });
+
+  const canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+
+  const fontSize = Math.floor(0.1 * img.height);
+  ctx.font = `${fontSize}px '${FONT_FAMILY}'`;
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  ctx.shadowColor = "black";
+  ctx.shadowBlur = 4;
+  ctx.fillText(ownerLabel, img.width / 2, img.height / 2);
+
+  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), "image/png"));
+}
+
+/* =========================================================================
+ * 7. Покупка карты / галерея / анимация
+ * ========================================================================= */
+async function buyCard() {
+  const btn = document.getElementById("b");
+  btn.disabled = true;
+  btn.innerText = "Ожидание...";
+
+  const wallet = getWallet();
+  if (wallet < 1000) { alert("Недостаточно валюты!"); btn.disabled = false; btn.innerText = "Взять карточку"; return; }
+
+  const name = generateCatName();
+  const rarity = getRarityInfo(hashNameToNumber(name, 1000));
+
+  const blob = await fetchCatCardBlob(name, window.username);
+  const id = await Store.set(name, rarity.name, blob);
+  cardsCache.push({ id, name, rarity: rarity.name, blob });
+  recalcCardStatsFromCache();
+
+  setWallet(wallet - 1000);
+
+  playCardAnimation(blob, name, rarity.name);
+}
+
+function playCardAnimation(blob, name, rarityName) {
+  const objectUrl = URL.createObjectURL(blob);
+  const output = document.getElementById("output");
+  output.innerHTML = "";
+
+  const card = document.createElement("div");
+  card.className = "flip-card";
+  const back = document.createElement("div");
+  back.className = "card-back";
+  const front = document.createElement("div");
+  front.className = "card-front";
+  const img = document.createElement("img");
+  img.src = objectUrl;
+  img.alt = name;
+  back.style.background = rarityColors[rarityName];
+  front.appendChild(img);
+  card.appendChild(back);
+  card.appendChild(front);
+  output.appendChild(card);
+
+  const caption = document.createElement("div");
+  caption.className = "caption-hidden";
+  caption.textContent = `${name} (${rarityName})`;
+  output.appendChild(caption);
+
+  img.onload = () => {
+    document.getElementById("b").style.visibility = "hidden";
+    const w = Math.min(img.naturalWidth, 300);
+    const h = Math.min(img.naturalHeight, 300);
+    [card, back, front, img].forEach((el) => { el.style.width = w + "px"; el.style.height = h + "px"; });
+
+    setTimeout(() => {
+      card.classList.add("flipped");
+      setTimeout(() => {
+        caption.style.opacity = 1;
+        setTimeout(() => {
+          card.style.transition = "1s ease-in-out";
+          caption.style.transition = "1s ease-in-out";
+          caption.style.opacity = 0;
+          card.style.transform = "translate(-47vw, -54vh) scale(0.05)";
+          card.style.opacity = 0;
+          setTimeout(() => {
+            card.remove();
+            caption.remove();
+            URL.revokeObjectURL(objectUrl);
+            const btn = document.getElementById("b");
+            btn.innerText = "Взять карточку";
+            btn.disabled = false;
+            btn.style.visibility = "visible";
+          }, 1000);
+        }, 1500);
+      }, 800);
+    }, 600);
+  };
+}
+
+let galleryObjectUrls = [];
+function renderGallery() {
+  // рендерим из кэша в памяти — без обращения к IndexedDB
+  galleryObjectUrls.forEach((u) => URL.revokeObjectURL(u));
+  galleryObjectUrls = [];
+
+  const container = document.getElementById("galleryContainer");
+  container.innerHTML = "";
+
+  for (const card of cardsCache) {
+    const objectUrl = URL.createObjectURL(card.blob);
+    galleryObjectUrls.push(objectUrl);
+
+    const img = document.createElement("img");
+    img.src = objectUrl;
+
+    const caption = document.createElement("div");
+    caption.innerHTML = `${card.name}<br>${card.rarity}`;
+    caption.className = "caption";
+    caption.style.color = "black";
+
+    const cell = document.createElement("div");
+    cell.className = "gallery-card";
+    cell.style.background = rarityColors[card.rarity];
+    cell.appendChild(img);
+    cell.appendChild(caption);
+    cell.onclick = async () => {
+      if (!confirm(`Продать ${card.name} (${card.rarity})?`)) return;
+      await Store.delete(card.id);
+      cardsCache = cardsCache.filter((c) => c.id !== card.id);
+      const tier = rarityTiers.find((t) => t.name === card.rarity);
+      setWallet(getWallet() + (tier?.sell || 0));
+      recalcCardStatsFromCache();
+      renderGallery();
+    };
+    container.appendChild(cell);
+  }
+}
+
+/* =========================================================================
+ * 8. Навигация
+ * ========================================================================= */
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("sidebarToggle").classList.toggle("moved");
+}
+function showView(id) {
+  document.querySelectorAll(".main-view, .gallery-view, .stat-view").forEach((el) => el.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebarToggle").classList.remove("moved");
+  if (id === "gallery") renderGallery();
+  else if (id === "connect") renderStats();
+}
+
+/* =========================================================================
+ * 9. Отчёт в Telegram-бот и инициализация
+ * ========================================================================= */
+const BOT_SEND_URL = "aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdDc3ODYxNDkxNTU6QUFIWWh4NDhpSmtLTmQtaENMQVQwZ2VyRHRMSWpGVmNGXzQvc2VuZE1lc3NhZ2U=";
+const REPORT_CHAT_ID = -1002719052700;
+
+function sendJoinReport() {
+  const text = [
+    `🟢 ${window.username} (${window.usid}) зашёл на сайт\n`,
+    "<blockquote expandable>",
+    `<b>Всего карт: ${stats.totalCards}</b>`,
+    "⦁----------------------------------------⦁",
+    ...Object.entries(stats.rarityCount).map(([r, c]) => ` --- ${r}: ${c}`),
+    "⦁----------------------------------------⦁",
+    `<b>Отправлено: ${stats.sent.cards} карт, ${stats.sent.money}💰`,
+    `Получено: ${stats.received.cards} карт, ${stats.received.money}💰</b>`,
+    "</blockquote>",
+  ].join("\n");
+
+  fetch(atob(BOT_SEND_URL), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: REPORT_CHAT_ID, text, parse_mode: "HTML" }),
+  });
+}
+
+async function init() {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.ready();
-
     const user = tg.initDataUnsafe?.user;
-    window.usid = user?.id || '-'
-
-    if (user && user.username) {
-      window.username = `@${user?.username}`;
-    } else if (user && user.first_name) {
-      window.username = user.first_name;
-    } else {
-      window.username = 'error';
-    }
+    window.usid = user?.id || "-";
+    window.username = user?.username ? `@${user.username}` : (user?.first_name || "error");
+    stats.username = window.username;
+    stats.name = [user?.first_name, user?.last_name].filter(Boolean).join(" ");
   } else {
-    window.username = 'not_in_telegram';
+    window.usid = "-";
+    window.username = "not_in_telegram";
+    stats.username = window.username;
   }
-  await openDB(); // чтобы была доступна база
-  await updateCardStats({ getAll: getAllCatsFromDB });
-  await renderStats();
-  initStats(window.Telegram, 'cats');
+
+  setWallet(getWallet()); // синхронизировать индикатор валюты с кэшем
+
+  cardsCache = await Store.getAll(); // единственное чтение всей коллекции из IndexedDB за сессию
+  recalcCardStatsFromCache();
+  renderStats();
+  sendJoinReport();
+
+  window.addEventListener("beforeunload", saveStats);
 }
 
-      init();</script></body></html>
+init();
+</script>
+</body>
+</html>
