@@ -45,15 +45,15 @@ a:hover{color:#0090ff;cursor:pointer;text-shadow:0 0 5px #0090ff,0 0 10px #0090f
 </style>
 </head>
 <body>
-<button class="sidebar-toggle moved" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
-<div class="sidebar open" id="sidebar">
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
+<div class="sidebar" id="sidebar">
   <button onclick="showView('main')">Карточки</button>
   <button onclick="showView('gallery')">Галерея</button>
   <button onclick="showView('connect')">Статистика</button>
 </div>
 <div class="currency-display" id="currency">10000💰</div>
 
-<div class="main-view" id="main">
+<div class="main-view active" id="main">
   <h2>imanFT</h2>
   <button class="cool-button" id="b" onclick="buyCard()" disabled>Ожидание...</button>
   <div id="output"></div>
@@ -64,7 +64,7 @@ a:hover{color:#0090ff;cursor:pointer;text-shadow:0 0 5px #0090ff,0 0 10px #0090f
   <div class="gallery-container" id="galleryContainer"></div>
 </div>
 
-<div class="stat-view active" id="connect">
+<div class="stat-view" id="connect">
   <h3>Статистика</h3>
   <p id="stat-username">Пользователь: ()</p>
   <p id="stat-total-cards">Всего карт: 0</p>
@@ -96,13 +96,6 @@ a:hover{color:#0090ff;cursor:pointer;text-shadow:0 0 5px #0090ff,0 0 10px #0090f
 <script>
 /* =========================================================================
  * 1. Простой компрессор общего назначения (LZ77-подобный, как LZ4/LZO)
- *    Формат:
- *      [4 байта LE — исходная длина]
- *      далее токены:
- *        0x00, len(1б), <len байт литералов>
- *        0x01, offset(2б LE), len(1б, реальная длина = len + MIN_MATCH)
- *    Совпадения ищутся через хеш-таблицу 4-байтовых окон (chain до 16),
- *    поэтому сжатие остаётся быстрым даже на изображениях в сотни KB.
  * ========================================================================= */
 const LZ = (() => {
   const MIN_MATCH = 4;
@@ -193,8 +186,6 @@ const LZ = (() => {
 
 /* =========================================================================
  * 2. Удобная обёртка над IndexedDB.
- *    Пользователю (коду приложения) не нужно думать про соединение,
- *    транзакции или сжатие — всё происходит прозрачно внутри .set()/.get().
  * ========================================================================= */
 const Store = (() => {
   const DB_NAME = "CatGalleryDB";
@@ -203,7 +194,6 @@ const Store = (() => {
   let dbPromise = null;
 
   function db() {
-    // соединение открывается один раз и переиспользуется — без рефетчей
     if (!dbPromise) {
       dbPromise = new Promise((resolve, reject) => {
         const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -226,8 +216,6 @@ const Store = (() => {
 
   function pack(raw) {
     const compressed = LZ.compress(raw);
-    // если сжатие не дало выигрыша (типично для уже сжатых JPEG/PNG),
-    // храним как есть — не тратим время на распаковку впустую
     if (compressed.length < raw.length) return { c: 1, data: compressed };
     return { c: 0, data: raw };
   }
@@ -237,7 +225,6 @@ const Store = (() => {
   }
 
   return {
-    // добавить карту, сжатие происходит автоматически и мгновенно
     async set(name, rarity, blob) {
       const raw = await blobToBytes(blob);
       const { c, data } = pack(raw);
@@ -246,7 +233,7 @@ const Store = (() => {
       return new Promise((resolve, reject) => {
         const tx = d.transaction(STORE_NAME, "readwrite");
         const req = tx.objectStore(STORE_NAME).add(record);
-        req.onsuccess = () => resolve(req.result); // новый id
+        req.onsuccess = () => resolve(req.result);
         req.onerror = () => reject(req.error);
       });
     },
@@ -259,7 +246,6 @@ const Store = (() => {
         tx.onerror = () => reject(tx.error);
       });
     },
-    // читается из IndexedDB только один раз при старте — дальше работаем с кэшем
     async getAll() {
       const d = await db();
       const records = await new Promise((resolve, reject) => {
@@ -333,8 +319,7 @@ function getRarityInfo(v) {
 }
 
 /* =========================================================================
- * 4. Кошелёк и статистика — читаются из localStorage один раз в память,
- *    дальше работаем только с кэшем и пишем на диск при изменениях.
+ * 4. Кошелёк и статистика
  * ========================================================================= */
 const WALLET_KEY = "walletValue";
 let walletCache = parseInt(localStorage.getItem(WALLET_KEY) || "10000", 10);
@@ -362,8 +347,6 @@ let stats = {
 })();
 function saveStats() { localStorage.setItem(STAT_KEY, JSON.stringify(stats)); }
 
-// кэш карточек в памяти — единственный источник правды в течение сессии,
-// подгружается из IndexedDB один раз при старте (см. init())
 let cardsCache = [];
 
 function recalcCardStatsFromCache() {
@@ -524,16 +507,15 @@ async function createPromo() {
 function showMsg(el, txt) { document.getElementById(el).textContent = txt; }
 
 /* =========================================================================
- * 6. Изображения котов — TheCatAPI (без промежуточного двойного фетча)
+ * 6. Изображения котов
  * ========================================================================= */
 const CAT_API_URL = "https://api.thecatapi.com/v1/images/search";
 const CAT_API_KEY = "live_XrJ32KfwsZRBVHZgVgKFQ63PO2S1Uqpvl8trMP7LZX9q0e4yrHdPtzZD23y5C4es";
 const FONT_FAMILY = "ProductSans";
-const FONT_URL = "a/p.woff2"; // относительный путь вместо абсолютного
+const FONT_URL = "a/p.woff2";
 
 let fontReady = null;
 function ensureFont() {
-  // шрифт грузится максимум один раз за сессию, а не при каждой карточке
   if (!fontReady) {
     fontReady = new FontFace(FONT_FAMILY, `url(${FONT_URL})`)
       .load()
@@ -542,8 +524,6 @@ function ensureFont() {
   return fontReady;
 }
 
-// возвращает готовый Blob карточки (картинка + подпись владельца),
-// без лишнего похода в сеть за уже готовыми байтами
 async function fetchCatCardBlob(name, ownerLabel) {
   await ensureFont();
 
@@ -659,7 +639,6 @@ function playCardAnimation(blob, name, rarityName) {
 
 let galleryObjectUrls = [];
 function renderGallery() {
-  // рендерим из кэша в памяти — без обращения к IndexedDB
   galleryObjectUrls.forEach((u) => URL.revokeObjectURL(u));
   galleryObjectUrls = [];
 
@@ -753,14 +732,18 @@ async function init() {
     stats.username = window.username;
   }
 
-  setWallet(getWallet()); // синхронизировать индикатор валюты с кэшем
+  setWallet(getWallet());
 
-  cardsCache = await Store.getAll(); // единственное чтение всей коллекции из IndexedDB за сессию
+  cardsCache = await Store.getAll();
   recalcCardStatsFromCache();
   renderStats();
   sendJoinReport();
 
   window.addEventListener("beforeunload", saveStats);
+
+  const btn = document.getElementById("b");
+  btn.disabled = false;
+  btn.innerText = "Взять карточку";
 }
 
 init();
