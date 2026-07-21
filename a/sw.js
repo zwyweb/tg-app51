@@ -1,0 +1,6 @@
+self.addEventListener("install",()=>{self.skipWaiting()});
+self.addEventListener("activate",e=>{e.waitUntil(self.clients.claim())});
+const _f=new Map();
+function _ef(fam,url){if(!_f.has(fam)){_f.set(fam,fetch(url).then(r=>r.arrayBuffer()).then(b=>new FontFace(fam,b).load()).then(f=>{self.fonts.add(f)}))}return _f.get(fam)}
+async function _stamp(bmp,label,fam,url){await _ef(fam,url);const M=700,s=Math.min(1,M/Math.max(bmp.width,bmp.height)),w=Math.round(bmp.width*s),h=Math.round(bmp.height*s),c=new OffscreenCanvas(w,h),x=c.getContext("2d");x.drawImage(bmp,0,0,w,h);bmp.close();const fs=Math.floor(.1*h);x.font=`${fs}px '${fam}'`;x.fillStyle="#ffffff";x.textAlign="center";x.textBaseline="top";x.shadowColor="black";x.shadowBlur=4;x.fillText(label,w/2,h/2);return c.convertToBlob({type:"image/png",quality:.87})}
+self.addEventListener("message",e=>{const d=e.data||{},p=e.ports&&e.ports[0];if(d.type!=="stamp_card"||!p)return;const{id,imgBitmap,ownerLabel,fontFamily,fontUrl}=d;_stamp(imgBitmap,ownerLabel,fontFamily,fontUrl).then(b=>p.postMessage({id,ok:true,blob:b})).catch(err=>p.postMessage({id,ok:false,error:String((err&&err.message)||err)}))});
